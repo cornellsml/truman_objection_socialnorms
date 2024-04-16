@@ -1,0 +1,110 @@
+-const postTimeStampsDict = val.comments.reduce(function(dict, commentObj) {dict[commentObj.time] ? dict[commentObj.time].push(commentObj.commentID) : dict[commentObj.time] = [commentObj.commentID]; commentObj.subcomments.length > 0 ? commentObj.subcomments.forEach(function(subcomment) { dict[subcomment.time] ? dict[subcomment.time].push(subcomment.commentID) : dict[subcomment.time] = [subcomment.commentID]; }) : null; return dict;}, {})
+-const postTimeStamps = Object.keys(postTimeStampsDict).map(Number).sort((a,b) => a-b)
+.ui.fluid.card(class=index!=0?"hidden":null, postID=val.id, index=val.postID, postClass=val.class, postTimeStamps=postTimeStamps, postTimeStampsDict=postTimeStampsDict)
+  .content.title
+    h2 !{val.body}
+      span(style="float: right; font-size: 0.8em; font-weight: normal;") 
+  .content
+    .ui.two.column.grid.stackable
+      .five.wide.column.centered
+        video(src=cdn+'/post_pictures/'+val.picture controls controlsList="nofullscreen" poster type='video/mp4')
+        .content.buttons
+          .ui.buttons.small
+            .ui.left.labeled.button(class=disabledFunctionalitiies? "disabled": "")
+              a.ui.basic.green.right.pointing.label !{val.likes}
+              .ui.like.button(tabindex='0', data-tooltip="I like this", data-position="bottom center", data-variation="mini", class=val.like? "green": null)
+                i.thumbs.up.icon
+                | Upvote
+            .ui.right.labeled.button(class=disabledFunctionalitiies? "disabled": "")
+              .ui.unlike.button(tabindex='0', data-tooltip="I dislike this", data-position="bottom center", data-variation="mini", class=val.unlike? "red": null)
+                i.thumbs.down.icon
+                | Downvote
+              a.ui.basic.red.left.pointing.label !{val.unlikes}
+          .secondary-buttons
+            .ui.flag.button.small(tabindex='0', data-tooltip="Report Video", data-position="top center", data-variation="mini", class=[val.flag? "orange": null, disabledFunctionalitiies? "disabled": ""])
+              i.flag.icon
+              | Flag
+      .eleven.wide.column.centered
+        h3 Comments
+        .ui.divider(style="margin:0px;")
+        .ui.message
+          .content
+            i.icon.youtube.large(style="float:left; margin-right:10px;")
+            | Timed Comments is on. Comments linked to a specific time in the video will appear when the video hits that timestamp.
+        .ui.comments
+          each comment in val.comments
+            .comment.hidden(commentID=comment.new_comment ? comment.commentID : comment.id, index=comment.commentID, commentClass=comment.class)
+              .content(class=!comment.flagged ? "transition hidden" : "")
+                .metadata  
+                  span.date 0:!{comment.time/1000<10 ? "0" + Math.floor(comment.time/1000) : Math.floor(comment.time/1000)}                                
+                .text(style="background-color: black; color: white; margin-right:2.5em; padding: 0.2em;")  You flagged this comment. The admins will review this comment further. We are sorry you had this experience.
+                .actions 
+                  a.unflag Unflag
+              if comment.new_comment 
+                .image(style="background-color:"+user.profile.color+";", class=comment.flagged ? "transition hidden": "")
+                  a.avatar
+                    img(src=user.profile.picture)
+              else
+                .image(style="background-color:"+comment.actor.profile.color+";", class=comment.flagged ? "transition hidden": "")
+                  a.avatar
+                    img(src=cdn+'/profile_pictures/'+comment.actor.profile.picture)
+              .content(class=comment.flagged ? "transition hidden": "")
+                if comment.new_comment 
+                  a.author(class='/me') !{user.username} (me)
+                else 
+                  a.author !{comment.actor.username}
+                .metadata
+                  span.date 0:!{comment.time/1000<10 ? "0" + Math.floor(comment.time/1000) : Math.floor(comment.time/1000)}
+                .text !{comment.body}
+                .actions 
+                  a.like(class=comment.liked ? "green" : null)
+                    i.icon.thumbs.up(class=comment.liked ? "green" : null)
+                    span.num !{comment.likes} 
+                  a.unlike(class=comment.unliked ? "red" : null)
+                    i.icon.thumbs.down(class=comment.unliked ? "red" : null)
+                    span.num !{comment.unlikes}
+                  a.reply Reply
+                  if !comment.new_comment 
+                    a.flag Flag
+              if comment.subcomments.length!==0
+                .comments.subcomments.hidden
+                  each subcomment in comment.subcomments
+                    .comment.hidden(commentID=subcomment.new_comment ? subcomment.commentID : subcomment.id, index=subcomment.commentID, commentClass=subcomment.class)
+                      .content(class=!subcomment.flagged ? "transition hidden" : "")
+                        .metadata
+                          span.date 0:!{subcomment.time/1000<10 ? "0" + Math.floor(subcomment.time/1000) : Math.floor(subcomment.time/1000)}
+                        .text(style="background-color: black; color: white; margin-right:2.5em; padding: 0.2em") You flagged this comment. The admins will review this comment further. We are sorry you had this experience.
+                        .actions 
+                          a.unflag Unflag
+                      if subcomment.new_comment 
+                        .image(style="background-color:"+user.profile.color+";", class=subcomment.flagged ? "transition hidden": "")
+                          a.avatar
+                            img(src=user.profile.picture)
+                      else
+                        .image(style="background-color:"+subcomment.actor.profile.color+";", class=subcomment.flagged ? "transition hidden": "")
+                          a.avatar
+                            img(src=cdn+'/profile_pictures/'+subcomment.actor.profile.picture)
+                      .content(class=subcomment.flagged ? "transition hidden": "")
+                          if subcomment.new_comment 
+                            a.author(class='/me') !{user.username} (me)
+                          else 
+                            a.author !{subcomment.actor.username}
+                          .metadata
+                            span.date 0:!{subcomment.time/1000<10 ? "0" + Math.floor(subcomment.time/1000) : Math.floor(subcomment.time/1000)}
+                          .text !{subcomment.body}
+                          .actions 
+                            a.like(class=subcomment.liked ? "green" : null)
+                              i.icon.thumbs.up(class=subcomment.liked ? "green" : null)
+                              span.num !{subcomment.likes} 
+                            a.unlike(class=subcomment.unliked ? "red" : null)
+                              i.icon.thumbs.down(class=subcomment.unliked ? "red" : null)
+                              span.num !{subcomment.unlikes}
+                            a.reply Reply
+                            if !subcomment.new_comment 
+                              a.flag Flag
+        .ui.form
+          .inline.field
+            .image
+              img.ui.image.rounded(src=user.profile.picture)
+            textarea.replyToVideo(name='replyToVideo' type='text' placeholder='Add a Comment...' rows='1' disabled=disabledFunctionalitiies? true: false)
+            i.big.send.link.icon.replyToVideo

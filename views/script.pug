@@ -1,0 +1,28 @@
+extends ui_layout
+
+block content
+  .two.wide.column(style="text-align: right; padding: 0;")
+    button.circular.ui.icon.button.blue.big.centered.left.hidden(data-tooltip='Previous Video', style="margin: 0;")
+      i.chevron.left.icon
+  .twelve.wide.column
+    each val, index in script
+      include ./partials/actorPost
+    //- include ./partials/shareModal
+  .two.wide.column(style="text-align: left; padding: 0;")
+    button.circular.ui.icon.button.blue.big.centered.right(nextVid=script[1].postID, data-tooltip='Next Video', style="margin: 0;")
+      i.chevron.right.icon
+    div.lastVid-button.hidden(data-tooltip="This was the last video. Return to the survey.", data-position="top center", style="width: fit-content;")
+      button.circular.ui.icon.button.blue.big.centered.disabled.right(nextVid=script[1].postID, style="margin: 0;")
+        i.chevron.right.icon
+    
+block scripts
+  script.
+    var numComments = !{JSON.stringify(user.numComments)};
+    var userProfile = !{JSON.stringify(user.profile)};
+  script(src='/public/js/script.js')
+  script(src='/public/js/lib/jquery.highlight-within-textarea.js')
+  script(src='/public/js/postFunctionalities.js')
+
+block styles 
+  link(type='text/css', rel='stylesheet', href='/public/css/jquery.highlight-within-textarea.css')
+  link(type='text/css', rel='stylesheet', href='/public/css/script.css')

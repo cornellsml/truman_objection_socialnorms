@@ -1,0 +1,114 @@
+/**Title*/
+
+h2 {
+    text-align: center;
+}
+
+h3 {
+    font-weight: normal;
+    line-height: 1.5;
+}
+
+.title {
+    color: #2B8490;
+    text-align: center;
+}
+
+
+/**Username Form*/
+
+.ui.form {
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+.ui.form,
+.ui.form .fields,
+.ui.form h3 {
+    justify-content: center;
+    text-align: center
+}
+
+h2.username {
+    color: #000000;
+    margin: 0px;
+}
+
+.ui.basic.buttons .button {
+    min-width: 400px;
+    min-height: 60px;
+    background-color: #ffffff !important;
+}
+
+.ui.basic.buttons .button:hover,
+.ui.basic.buttons .button:active {
+    background-color: #fefefe !important;
+}
+
+.ui.basic.buttons .green.button {
+    background-color: #fefefe !important;
+    border: solid 4px;
+    border-color: #2b905a;
+}
+
+.ui.basic.vertical.buttons .green.button:first-child {
+    border-top-width: 4px;
+}
+
+i.icon.green {
+    float: right;
+}
+
+i.icon.green.hidden {
+    visibility: hidden;
+    float: left
+}
+
+
+/**Photo*/
+
+.images {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.images .image {
+    width: 20%;
+    min-width: 140px;
+    height: 140px;
+    position: relative;
+}
+
+.images .image.green {
+    background-color: #fefefe !important;
+    border: solid 4px;
+    border-color: #2b905a;
+    border-radius: 1em;
+}
+
+a.avatar {
+    /* border-radius: 50% !important;
+    background-color: #b7c9c8;
+    width: 86%;
+    height: 86%;
+    margin: 7%; */
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
+
+a.avatar img {
+    /* width: 65%; */
+    width: 60%;
+}
+
+.image i.icon.green.check {
+    position: absolute;
+    right: 2%;
+    bottom: 2%;
+    font-size: 1.71428571rem;
+}

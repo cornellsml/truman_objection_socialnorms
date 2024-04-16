@@ -1,0 +1,16 @@
+a.like,
+a.unlike,
+a.reply,
+a.flag {
+    pointer-events: none;
+    cursor: default;
+    opacity: 0.6;
+}
+
+i.replyToVideo,
+i.replyToVideo:hover,
+i.replyToVideo:active {
+    color: lightgrey;
+    pointer-events: none;
+    cursor: default;
+}

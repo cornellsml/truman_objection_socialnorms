@@ -1,0 +1,144 @@
+body {
+    background-color: #F5F8FA;
+    padding: 0em;
+    color: black;
+}
+
+
+/* Header CSS*/
+
+.ui.menu>.container {
+    justify-content: center
+}
+
+
+/* General CSS */
+
+.hidden {
+    display: none;
+}
+
+.ui.menu .item img.logo {
+    margin-left: 3.5em;
+}
+
+.ui.menu .item>i.icon {
+    margin: 0 !important;
+}
+
+a {
+    cursor: pointer;
+}
+
+button {
+    cursor: pointer;
+}
+
+.ui.button {
+    cursor: pointer;
+}
+
+#newpost.ui.fluid.left.labeled.right.icon.input {
+    cursor: pointer;
+}
+
+.main.container {
+    margin-top: 5em;
+}
+
+.ui.fluid.card>.content>.description {
+    font-size: 1.05em;
+}
+
+.wireframe {
+    margin-top: 2em;
+}
+
+
+/* Image Upload*/
+
+.image-upload>input {
+    display: none;
+}
+
+.image-upload img {
+    cursor: pointer;
+}
+
+.ui.three.column.grid.pro {
+    margin: 0;
+}
+
+.ui.three.column.grid.pro .column {
+    padding: 0 4px;
+}
+
+.ui.three.column.grid.pro .column img {
+    margin-top: 8px;
+    vertical-align: middle;
+}
+
+.ui.mini.image {
+    height: 35px;
+}
+
+
+/*Page Container*/
+
+#pagegrid {
+    justify-content: center;
+}
+
+#pagecontainer {
+    padding-top: 90px;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* ---- CONTINUE TO NEXT PAGE BUTTON ---- */
+
+.ui.labeled.icon.button>.icon {
+    font-size: 25px;
+    width: 50px;
+}
+
+.ui.labeled.icon.button {
+    margin-bottom: 40px;
+}
+
+.ui.green.button {
+    background-color: #2b905a;
+}
+
+.ui.green.button:hover {
+    background-color: #349a64;
+}
+
+.ui.green.button:active {
+    background-color: #278552;
+}
+
+.ui.green.button.hidden {
+    display: none !important;
+}
+
+
+/*User Avatar in header*/
+
+.ui.simple.dropdown.item .image {
+    width: 44px;
+    height: 44px;
+    margin-right: 5px;
+    background-color: #a6a488;
+    border-radius: 50% !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
+
+.ui.simple.dropdown.item .image>img.ui.image.rounded {
+    width: 60%;
+    margin-right: 1px;
+}

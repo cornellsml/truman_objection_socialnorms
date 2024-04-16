@@ -1,0 +1,27 @@
+extends ../ui_layout
+
+block styles 
+    link(type='text/css', rel='stylesheet', href='/public/css/interest.css')
+
+block content
+    .thirteen.wide.column.centered
+        h2(style="text-align: center;") Choose an interest
+        .ui.warning.message.hidden
+            i.close.icon 
+            .header Choose an interest to proceed!
+        h3(style="font-weight: normal") Tell us which topic you are most interested in, and we will redirect you to the right community.
+        .ui.form(style="display: flex;justify-content: center;")
+            .fields
+                .images
+                    each interestInfo, interest in interestData
+                        .image(id=interest)
+                            i.massive.icon(class=interestInfo["Icon"])
+                            h2 !{interestInfo["Title"]}
+                            i.icon.green.check.hidden
+        .ui.divider
+        .ui.big.labeled.icon.button.feed
+            i.rocket.icon
+            |   Let's Go!
+
+block scripts
+    script(src='/public/js/interest.js')

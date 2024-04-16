@@ -1,0 +1,18 @@
+extends ui_layout
+
+block content
+    .thirteen.wide.column.centered
+        h2(style="text-align: center;") Instructions:
+        h3(style="font-weight: normal") Now, we are inviting you to use VidShare with complete functionalities. 
+          h3(style="font-weight: normal") In this step, you are invited to actively engage in VidShare. 
+        .ui.big.labeled.icon.button.green.feed
+            i.rocket.icon
+            |   Let's Go!
+
+block scripts
+    script.
+        $(window).on("load", function(){
+            $(".ui.big.labeled.icon.button.green.feed").on("click", function(){
+                window.location.href = '/';
+            })
+        });

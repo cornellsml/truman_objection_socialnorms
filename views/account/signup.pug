@@ -1,0 +1,68 @@
+extends ../ui_layout
+
+block styles 
+    link(type='text/css', rel='stylesheet', href='/public/css/signup.css')
+
+block content
+  -var initials = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"] 
+  -var photos = ['/1_ant.svg', '/2_bear.svg', '/3_butterfly.svg', '/4_cat.svg','/5_chicken.svg','/6_crab.svg','/7_deer.svg','/8_gorilla.svg','/9_dog.svg','/10_monkey.svg']
+  .thirteen.wide.column.centered
+    h1(style="text-align:center;") Welcome to
+      img(src='https://dhpd030vnpk29.cloudfront.net/truman-objections/favicon.svg', height="50px", style="margin-bottom:-10px")
+      span.title VidShare
+      | !
+    h3 We are a new video-based social media community.  
+    h3 We warmly welcome you to fully immerse yourself in our lively community by interacting with videos and comments from other users.
+    .ui.divider(style="margin-top:2em;")
+    h1(style="margin-top:2em;") Create an Account
+    h3 First, begin by creating an account.
+    //- .ui.divider
+    h2 Create a Username
+    .ui.warning.message.hidden.username
+      i.close.icon 
+      .header Don't forget to create and choose a username!
+    h3 Please type your initials below to create a username. 
+    h3 We will generate 3 random available usernames based on your initials to keep your identity anonymous. Then, choose one username you would like to use.
+    .ui.form
+      .fields
+        .field.four.wide
+          label 
+            h3 First Name Initial: 
+          select.ui.search.dropdown.fluid(name="firstInitial")
+            option(value='') Select Initial
+            each letter in initials
+              option(value=letter) #{letter}   
+        .field.four.wide
+          label 
+            h3 Last Name Initial: 
+          select.ui.search.dropdown.fluid(name="lastInitial")
+            option(value='') Select Initial
+            each letter in initials
+              option(value=letter) #{letter}
+      h3 Available Usernames:
+      .ui.vertical.basic.buttons
+        button.ui.button
+          h2.username_1.username &nbsp;
+        button.ui.button
+          h2.username_2.username &nbsp;
+        button.ui.button 
+          h2.username_3.username &nbsp;
+    //- .ui.divider
+    h2 Choose a Profile Picture
+    .ui.warning.message.hidden.photo
+      i.close.icon 
+      .header Don't forget to choose a profile picture!
+    h3 Please also choose a profile picture from below to use.
+    .ui.form
+      .images
+        each filename in photos
+          .image
+            a.avatar
+              img(src=cdn+"/profile_pictures"+filename)
+            i.icon.green.check.hidden
+    .ui.big.labeled.icon.button
+      i.arrow.alternate.circle.right.icon
+      | Create Account
+
+block scripts
+  script(src='/public/js/signup.js')

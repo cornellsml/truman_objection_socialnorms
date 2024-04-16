@@ -1,0 +1,53 @@
+{
+    "name": "Vid.socialsandbox.xyz",
+    "short_name": "VidShare",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "orientation": "portrait",
+    "description": "Watch videos as a community!",
+    "theme_color": "#F5F8FA",
+    "icons": [{
+            "src": "\/public/logo.svg",
+            "sizes": "36x36",
+            "type": "image/png",
+            "density": "0.75"
+        },
+        {
+            "src": "\/public/logo.svg",
+            "sizes": "48x48",
+            "type": "image\/png",
+            "density": "1.0"
+        },
+        {
+            "src": "\/public/logo.svg",
+            "sizes": "72x72",
+            "type": "image\/png",
+            "density": "1.5"
+        },
+        {
+            "src": "\/public/logo.svg",
+            "sizes": "96x96",
+            "type": "image\/png",
+            "density": "2.0"
+        },
+        {
+            "src": "\/public/logo.svg",
+            "sizes": "144x144",
+            "type": "image\/png",
+            "density": "3.0"
+        },
+        {
+            "src": "/logo.svg",
+            "sizes": "1694×510",
+            "type": "image\/png",
+            "density": "72.0"
+        },
+        {
+            "src": "\/public/logo.svg",
+            "sizes": "192x192",
+            "type": "image\/png",
+            "density": "4.0"
+        }
+    ]
+}

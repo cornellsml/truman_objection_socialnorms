@@ -1,0 +1,14 @@
+{
+    "Science": {
+        "Icon": "flask",
+        "Title": "Science and Technology"
+    },
+    "Education": {
+        "Icon": "book",
+        "Title": "Education"
+    },
+    "Lifestyle": {
+        "Icon": "heartbeat",
+        "Title": "Health and Lifestyle"
+    }
+}

@@ -1,0 +1,17 @@
+.twelve.wide.column.centered {
+    font-size: 1.14285714rem;
+    line-height: 1.5;
+}
+
+h1 {
+    text-align: center;
+}
+
+h3 {
+    line-height: 1.5;
+    font-weight: normal;
+}
+
+.title {
+    color: #2B8490;
+}
