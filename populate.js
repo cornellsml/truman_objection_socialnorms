@@ -331,6 +331,9 @@ async function doPopulate() {
                                 actor: act,
                                 time: new_reply.time || null,
                                 class: new_reply.class,
+
+                                objectionTime: new_reply.objection_time,
+
                                 subcomments: []
                             };
                             pr.comments.push(comment_detail);

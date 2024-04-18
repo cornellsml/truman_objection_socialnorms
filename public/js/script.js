@@ -1,5 +1,6 @@
 $(window).on("load", function() {
     const numVideos = $('video').length;
+    const firstVideoIndex = parseInt($(`.ui.fluid.card:visible`).attr("index"));
     let seenMessages = {
         offense1: false,
         offense2: false,
@@ -184,8 +185,7 @@ $(window).on("load", function() {
     })
 
     // Buttons to switch videos
-    $('.lastVid-button')
-        .popup();
+    $('.lastVid-button').popup();
     $('button.circular.ui.icon.button.blue.centered').on("click", async function() {
         const currentCard = $('.ui.fluid.card:visible');
         // If current video is not paused, pause video.
@@ -197,19 +197,20 @@ $(window).on("load", function() {
 
         // Transition to next video and play the video.
         const nextVid = parseInt($(this).attr('nextVid'));
+        const index = nextVid - firstVideoIndex;
         $('.ui.fluid.card:visible').transition('hide');
         $(`.ui.fluid.card[index=${nextVid}]`).transition();
         $(`.ui.fluid.card[index=${nextVid}] video`)[0].play();
 
         // Hide buttons accordingly
-        if (nextVid % numVideos == 0) {
+        if (index % numVideos == 0) {
             $('button.left').addClass("hidden");
         } else {
             $('button.left').removeClass("hidden");
             $('button.left').attr('nextVid', nextVid - 1);
         }
 
-        if (nextVid % numVideos == numVideos - 1) {
+        if (index % numVideos == numVideos - 1) {
             $('button.right:not(.disabled)').addClass("hidden");
             $('.lastVid-button').removeClass("hidden");
         } else {
@@ -224,4 +225,14 @@ $(window).on("load", function() {
             _csrf: $('meta[name="csrf-token"]').attr('content')
         });
     });
+
+    // Buttons to next page
+    $(".ui.large.button.green.lastVid-button").on("click", async function() {
+        $(this).addClass('loading disabled');
+        if (window.location.pathname == '/tutorial') {
+            window.location.href = "/trans";
+        } else {
+            await resetActiveTimer(true, false);
+        }
+    })
 });

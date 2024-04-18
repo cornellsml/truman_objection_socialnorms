@@ -232,8 +232,6 @@ exports.postSignup = async(req, res, next) => {
             });
         }
 
-        console.log(user);
-
         await user.save();
         req.logIn(user, (err) => {
             if (err) {

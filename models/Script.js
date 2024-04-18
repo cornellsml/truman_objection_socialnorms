@@ -10,9 +10,6 @@ const scriptSchema = new mongoose.Schema({
     actor: { type: Schema.ObjectId, ref: 'Actor' }, //actor of post
     time: Number,
 
-    offense_time: Number,
-    objection_time: Number,
-
     class: String, //For experimental use (used to define the type of post: Science, Education, Lifestyle)
     length: Number, //length of video in seconds
 
@@ -25,6 +22,8 @@ const scriptSchema = new mongoose.Schema({
         actor: { type: Schema.ObjectId, ref: 'Actor' }, //actor of comment
         time: Number, //time of comment in reference to video (in milliseconds)
         class: String, //For experimental use (used to define the type of comment, null, offense, control)
+
+        objectionTime: Number,
 
         subcomments: [new Schema({
             commentID: Number, // ID of the comment

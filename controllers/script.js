@@ -56,33 +56,33 @@ exports.getScriptTutorial = async(req, res, next) => {
             3: "Please remember to stay respectful to each other here. Insulting others isn't cool."
         };
 
-        // For each interest, list of harassment comments is provided. 
-        // Each element in list gives harassment location information: [Video Index, Comment Index, Objection time]. 
-        // Locations in video/coment list to be replaced with harassments.
+        // For each interest, a list of harassment comments' locations is provided. 
+        // Each element in the list gives a harassment location information: [Video Index, Comment Index, Objection time]. 
+        // These locations are to be replaced with harassments & accompanying objections.
         const videoIndexCommentIndex_HarassmentComments = {
             "Science": [
-                [1, 0, 13000],
-                [4, 0, 12000],
-                [4, 3, 13000],
-                [2, 3, 19000],
-                [2, 4, 9000],
-                [3, 2, 18000]
+                [1, 0],
+                [4, 0],
+                [4, 3],
+                [2, 3],
+                [2, 4],
+                [3, 2]
             ],
             "Education": [
-                [1, 0, 11000],
-                [4, 0, 21000],
-                [4, 3, 27000],
-                [2, 3, 42000],
-                [2, 4, 7000],
-                [3, 2, 32000]
+                [1, 0],
+                [4, 0],
+                [4, 3],
+                [2, 3],
+                [2, 4],
+                [3, 2]
             ],
             "Lifestyle": [
-                [1, 0, 21000],
-                [4, 0, 23000],
-                [4, 3, 24000],
-                [2, 3, 33000],
-                [2, 4, 18000],
-                [3, 2, 33000]
+                [1, 0],
+                [4, 0],
+                [4, 3],
+                [2, 3],
+                [2, 4],
+                [3, 2]
             ]
         };
 
@@ -90,6 +90,8 @@ exports.getScriptTutorial = async(req, res, next) => {
             const locationToReplace = videoIndexCommentIndex_HarassmentComments[user.interest][harassmentNum];
             script_feed[locationToReplace[0]].comments[locationToReplace[1]].body = harassmentComments[user.harassmentOrder[harassmentNum]];
             script_feed[locationToReplace[0]].comments[locationToReplace[1]].class = `offense${parseInt(harassmentNum)+1}`;
+            script_feed[locationToReplace[0]].comments[locationToReplace[1]].likes = 1;
+            script_feed[locationToReplace[0]].comments[locationToReplace[1]].unlikes = 1;
         }
 
         for (const index in user.harassmentToObjectToOrder) {
@@ -102,7 +104,7 @@ exports.getScriptTutorial = async(req, res, next) => {
                 likes: 0,
                 unlikes: 0,
                 actor: objectionActors[counter],
-                time: locationToReplace[2],
+                time: script_feed[locationToReplace[0]].comments[locationToReplace[1]].objectionTime,
                 class: `objection${counter+1}`,
 
                 new_comment: false,
@@ -121,7 +123,7 @@ exports.getScriptTutorial = async(req, res, next) => {
             return post;
         });
 
-        res.render('tutorial', { script: script_feed, title: 'Feed', disabledFunctionalitiies: true });
+        res.render('script', { script: script_feed, title: 'Feed', disabledFunctionalitiies: true });
     } catch (err) {
         next(err);
     }
@@ -158,11 +160,11 @@ exports.getScript = async(req, res, next) => {
 
         if (user.group != "None-True") {
             script_feed[2].comments[0].body = "Another pointless video. Ever consider that no one cares?";
-            script_feed[2].comments[0].likes = 0;
-            script_feed[2].comments[0].unlikes = 0;
+            script_feed[2].comments[0].likes = 1;
+            script_feed[2].comments[0].unlikes = 1;
             script_feed[2].comments[0].class = 'offense7';
-
         }
+
         //Final array of all posts to go in the feed
         let finalfeed = [];
 
@@ -311,7 +313,7 @@ exports.getScript = async(req, res, next) => {
 exports.postUpdateFeedAction = async(req, res, next) => {
     try {
         const user = await User.findById(req.user.id).exec();
-        //find the object from the right post in feed
+        // Find the object from the right post in feed
         let feedIndex = _.findIndex(user.feedAction, function(o) { return o.post == req.body.postID; });
 
         if (feedIndex == -1) {
@@ -319,10 +321,10 @@ exports.postUpdateFeedAction = async(req, res, next) => {
                 post: req.body.postID,
                 postClass: req.body.postClass,
             };
-            // add new post into correct location
+            // Add new post into correct location
             feedIndex = user.feedAction.push(cat) - 1;
         }
-        //create a new Comment
+        // Create a new Comment
         if (req.body.new_comment) {
             user.numComments = user.numComments + 1;
             const cat = {
@@ -342,7 +344,7 @@ exports.postUpdateFeedAction = async(req, res, next) => {
             user.feedAction[feedIndex].comments.push(cat);
         }
 
-        //Are we doing anything with a comment?
+        // Are we doing anything with a comment?
         else if (req.body.commentID) {
             const isUserComment = (req.body.isUserComment == 'true');
             let commentIndex = (isUserComment) ?
@@ -361,7 +363,7 @@ exports.postUpdateFeedAction = async(req, res, next) => {
                 commentIndex = user.feedAction[feedIndex].comments.length - 1;
             }
 
-            //LIKE A COMMENT
+            // LIKE A COMMENT
             if (req.body.like) {
                 let like = req.body.like;
                 if (user.feedAction[feedIndex].comments[commentIndex].likeTime) {
@@ -374,7 +376,7 @@ exports.postUpdateFeedAction = async(req, res, next) => {
                 if (req.body.isUserComment != 'true') user.numCommentLikes++;
             }
 
-            //UNLIKE A COMMENT
+            // UNLIKE A COMMENT
             if (req.body.unlike) {
                 let unlike = req.body.unlike;
                 if (user.feedAction[feedIndex].comments[commentIndex].unlikeTime) {
@@ -386,7 +388,7 @@ exports.postUpdateFeedAction = async(req, res, next) => {
                 if (req.body.isUserComment != 'true') user.numCommentLikes--;
             }
 
-            //FLAG A COMMENT
+            // FLAG A COMMENT
             else if (req.body.flag) {
                 let flag = req.body.flag;
                 if (user.feedAction[feedIndex].comments[commentIndex].flagTime) {
@@ -398,7 +400,7 @@ exports.postUpdateFeedAction = async(req, res, next) => {
                 user.feedAction[feedIndex].comments[commentIndex].flagged = true;
             }
 
-            //UNFLAG A COMMENT
+            // UNFLAG A COMMENT
             else if (req.body.unflag) {
                 let unflag = req.body.unflag;
                 if (user.feedAction[feedIndex].comments[commentIndex].flagTime) {
@@ -410,7 +412,7 @@ exports.postUpdateFeedAction = async(req, res, next) => {
                 user.feedAction[feedIndex].comments[commentIndex].flagged = false;
             }
 
-            //SHARE A COMMENT 
+            // SHARE A COMMENT 
             else if (req.body.share) {
                 console.log()
                 let share = req.body.share;
@@ -422,10 +424,9 @@ exports.postUpdateFeedAction = async(req, res, next) => {
                 }
                 user.feedAction[feedIndex].comments[commentIndex].shared = true;
             }
-        }
-        //Not a comment-- Are we doing anything with the post?
+        } // Not a comment-- Are we doing anything with the post?
         else {
-            //Flag event
+            // Flag event
             if (req.body.flag) {
                 let flag = req.body.flag;
                 if (!user.feedAction[feedIndex].flagTime) {
@@ -434,9 +435,7 @@ exports.postUpdateFeedAction = async(req, res, next) => {
                     user.feedAction[feedIndex].flagTime.push(flag);
                 }
                 user.feedAction[feedIndex].flagged = !user.feedAction[feedIndex].flagged;
-            }
-
-            //Like event
+            } // Like event
             else if (req.body.like) {
                 let like = req.body.like;
                 if (!user.feedAction[feedIndex].likeTime) {
@@ -445,8 +444,7 @@ exports.postUpdateFeedAction = async(req, res, next) => {
                     user.feedAction[feedIndex].likeTime.push(like);
                 }
                 user.feedAction[feedIndex].liked = !user.feedAction[feedIndex].liked;
-            }
-            //Unlike event
+            } // Unlike event
             else if (req.body.unlike) {
                 let unlike = req.body.unlike;
                 if (!user.feedAction[feedIndex].unlikeTime) {
@@ -455,8 +453,7 @@ exports.postUpdateFeedAction = async(req, res, next) => {
                     user.feedAction[feedIndex].unlikeTime.push(unlike);
                 }
                 user.feedAction[feedIndex].unliked = !user.feedAction[feedIndex].unliked;
-            }
-            //Share event 
+            } // Share event 
             else if (req.body.share) {
                 let share = req.body.share;
                 if (!user.feedAction[feedIndex].shareTime) {
@@ -465,7 +462,7 @@ exports.postUpdateFeedAction = async(req, res, next) => {
                     user.feedAction[feedIndex].shareTime.push(share);
                 }
                 user.feedAction[feedIndex].shared = true;
-            } //Read event: Not used.
+            } // Read event: Not used.
             else if (req.body.viewed) {
                 let view = req.body.viewed;
                 if (!user.feedAction[feedIndex].readTime) {

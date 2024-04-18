@@ -4,6 +4,15 @@
       a.item(href='')
         img.ui.image(src='https://dhpd030vnpk29.cloudfront.net/truman-objections/logo.svg', id='logo', width='150px')
       if user
+        .item
+          p group: !{user.group}
+        .item
+          p harassmentOrder: !{user.harassmentOrder}
+        .item
+          p harassmentToObjectTo: !{user.harassmentToObjectToOrder}
+        .item
+          p objectionOrder: !{user.objectionOrder}
+      if user
         .right.menu
           .ui.simple.dropdown.item
             .image
