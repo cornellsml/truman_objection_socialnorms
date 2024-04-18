@@ -30,6 +30,7 @@ exports.getScriptTutorial = async(req, res, next) => {
             .sort('postID')
             .populate('actor')
             .populate('comments.actor')
+            .populate('comments.subcomments.actor')
             .exec();
         // Counter to track which objection actor to use
         let counter = 0;

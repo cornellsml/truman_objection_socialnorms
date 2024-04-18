@@ -142,7 +142,7 @@ async function doPopulate() {
                         await actor.save();
                     } catch (err) {
                         console.log(color_error, "ERROR: Something went wrong with saving actor in database");
-                        next(err);
+                        callback(err);
                     }
                 },
                 function(err) {
@@ -184,7 +184,7 @@ async function doPopulate() {
                             await script.save();
                         } catch (err) {
                             console.log(color_error, "ERROR: Something went wrong with saving post in database");
-                            next(err);
+                            callback(err);
                         }
                     } else { //Else no actor found
                         console.log(color_error, "ERROR: Actor not found in database");
@@ -318,6 +318,7 @@ async function doPopulate() {
     }).then(function(result) {
         console.log(color_start, "Starting to populate post replies...");
         return new Promise((resolve, reject) => {
+            let parentComment;
             async.eachSeries(comment_list, async function(new_reply, callback) {
                     const act = await Actor.findOne({ username: new_reply.actor }).exec();
                     if (act) {
@@ -336,6 +337,18 @@ async function doPopulate() {
 
                                 subcomments: []
                             };
+
+                            // Is a parent comment?
+                            if (new_reply.class == 'R') {
+                                parentComment = comment_detail;
+                                return
+                            } // Is a reply?
+                            else if (parentComment != null) {
+                                parentComment.subcomments.push(comment_detail);
+                                comment_detail = parentComment;
+                                parentComment = null;
+                            }
+
                             pr.comments.push(comment_detail);
                             pr.comments.sort(function(a, b) { return a.time - b.time; });
 
@@ -344,7 +357,7 @@ async function doPopulate() {
                             } catch (err) {
                                 console.log(color_error, "ERROR: Something went wrong with saving reply in database");
                                 console.log(err);
-                                next(err);
+                                callback(err);
                             }
                         } else { //Else no post found
                             console.log(color_error, "ERROR: Post not found in database");
