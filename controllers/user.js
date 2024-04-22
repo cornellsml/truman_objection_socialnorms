@@ -101,7 +101,9 @@ exports.getLogin = (req, res) => {
  * GET /logout
  * Handles user log out.
  */
-exports.logout = (req, res) => {
+exports.logout = async(req, res) => {
+    const user = await User.findById(req.user.id).exec();
+    user.logPage(Date.now(), '/thankyou');
     req.logout((err) => {
         if (err) console.log('Error : Failed to logout.', err);
         req.session.destroy((err) => {

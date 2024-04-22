@@ -10,7 +10,7 @@ async function resetActiveTimer(loggingOut, fromIdle) {
         const activeDuration = currentTime - activeStartTime - (fromIdle ? 60000 : 0);
         if (window.location.pathname !== '/signup' && window.location.pathname !== '/thankyou') {
             let pathname = window.location.pathname;
-            if (window.location.pathname == '/') {
+            if (window.location.pathname == '/' || window.location.pathname == '/tutorial') {
                 const currentCard = $('.ui.fluid.card:visible');
                 const index = currentCard.attr("index"); // postID (i.e. 0, 1, 2, 3, 4)
                 pathname += `?v=${index}`;

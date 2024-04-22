@@ -10,6 +10,7 @@ block content
   .two.wide.column(style="text-align: left; padding: 0;")
     button.circular.ui.icon.button.blue.big.centered.right(nextVid=script[1].postID, data-tooltip='Next Video', style="margin: 0;")
       i.chevron.right.icon
+    //- div is needed because a disabled button cannot display a tooltip.
     div.lastVid-button.hidden(data-html="This is the last video.</br>Click continue to proceed.", data-position="top center", style="width: fit-content;")
       button.circular.ui.icon.button.blue.big.centered.disabled.right(nextVid=script[1].postID, style="margin: 0;")
         i.chevron.right.icon

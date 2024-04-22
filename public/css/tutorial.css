@@ -14,3 +14,18 @@ i.replyToVideo:active {
     pointer-events: none;
     cursor: default;
 }
+
+a.author,
+a.author:hover,
+a.author:active {
+    pointer-events: none;
+    cursor: default;
+    color: rgba(0, 0, 0, .87);
+}
+
+a.avatar,
+a.avatar:hover,
+a.avatar:active {
+    pointer-events: none;
+    cursor: default;
+}

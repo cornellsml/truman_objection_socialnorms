@@ -144,7 +144,7 @@ const userSchema = new mongoose.Schema({
             flagTime: [Date], //absoluteTimes of times user has flagged the comment
             shareTime: [Date], //absoluteTimes of times user has shared the comment
             new_comment: { type: Boolean, default: false }, //is this a comment from user?
-            new_comment_id: Number, //ID for comment, begins at 90
+            new_comment_id: Number, //ID for comment, begins at 100
             reply_to: Number, // CommentID/index if comment is a reply
             parent_comment: Number, //CommentID/index of parent comment (used for identifying subcommenting)
             body: String, //Body of comment

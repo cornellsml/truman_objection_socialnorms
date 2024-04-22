@@ -296,7 +296,7 @@ function addCommentToVideo(e) {
         const videoTime = card.find("video")[0].currentTime * 1000;
         const date = Date.now();
         const postID = card.attr("postID");
-        const commentID = numComments + 1 + 90;
+        const commentID = numComments + 1 + 100;
 
         const mess = `
         <div class="comment" commentID=${commentID} index=${commentID}>
@@ -435,7 +435,7 @@ function addCommentToComment(e) {
         const date = Date.now();
         const postID = card.attr("postID");
         const postClass = card.attr("postClass");
-        const commentID = numComments + 1 + 90;
+        const commentID = numComments + 1 + 100;
         const reply_to = orig_comment.children(".content").children("a.author").hasClass('/me') ? orig_comment.attr('commentID') : orig_comment.attr('index');
         const parent_comment = form.parents(".comment").last().attr('index');
 

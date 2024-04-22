@@ -308,7 +308,7 @@ exports.getScript = async(req, res, next) => {
 };
 
 /**
- * POST /feed/
+ * POST /feed
  * Update user's actions on ACTOR posts. 
  */
 exports.postUpdateFeedAction = async(req, res, next) => {
@@ -330,7 +330,7 @@ exports.postUpdateFeedAction = async(req, res, next) => {
             user.numComments = user.numComments + 1;
             const cat = {
                 new_comment: true,
-                new_comment_id: user.numComments + 90,
+                new_comment_id: user.numComments + 100,
                 body: req.body.comment_text,
                 relativeTime: req.body.new_comment - user.createdAt,
                 absTime: req.body.new_comment,
@@ -473,17 +473,19 @@ exports.postUpdateFeedAction = async(req, res, next) => {
                 }
                 user.feedAction[feedIndex].rereadTimes++;
                 user.feedAction[feedIndex].mostRecentTime = Date.now();
-            } else if (req.body.videoAction) {
+            } // Video action (play, pause, seeking, seeked) 
+            else if (req.body.videoAction) {
                 user.feedAction[feedIndex].videoAction.push(req.body.videoAction);
-            } else if (req.body.videoDuration) {
+            } // Video duration (array of time durations user viewed the video) 
+            else if (req.body.videoDuration) {
                 user.feedAction[feedIndex].videoDuration.push(req.body.videoDuration);
             } else {
                 console.log(req.body);
                 console.log('Something in feedAction went crazy. You should never see this.');
             }
-            await user.save();
-            res.send({ result: "success", numComments: user.numComments });
         }
+        await user.save();
+        res.send({ result: "success", numComments: user.numComments });
     } catch (err) {
         next(err);
     }
