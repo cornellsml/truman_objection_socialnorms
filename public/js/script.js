@@ -147,7 +147,11 @@ $(window).on("load", function() {
 
     // Buttons to switch videos
     $(".lastVid-button").popup(); // Enables tooltip
+    let isTransitioning = false; // For debouncing to limit the frequency of click events
     $("button.circular.ui.icon.button.blue.centered").on("click", async function() {
+        if (isTransitioning) return; // Exit early if a transition is already in progress
+        isTransitioning = true; // Set transitioning flag
+
         const currentCard = $(".ui.fluid.card:visible");
         // If current video is not paused, pause video.
         if (!currentCard.find("video")[0].paused) {
@@ -185,6 +189,9 @@ $(window).on("load", function() {
             path: window.location.pathname + `?v=${nextVid}`,
             _csrf: $("meta[name='csrf-token']").attr("content")
         });
+
+        // After all operations are completed, reset the transitioning flag
+        isTransitioning = false;
     });
 
     // Buttons to next page
