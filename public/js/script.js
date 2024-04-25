@@ -2,7 +2,8 @@ let seenMessages = {};
 
 async function getpostTimeStamps(postID) {
     const data = await $.get("/postTimeStamps", {
-        postID: postID
+        postID: postID,
+        section: window.location.pathname == "/tutorial" ? "tutorial" : "feed"
     });
     script.postTimeStamps = data.postTimeStamps;
     script.postTimeStampsDictionary = data.postTimeStampsDict;
