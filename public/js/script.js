@@ -202,6 +202,11 @@ $(window).on("load", function() {
     // Buttons to next page
     $(".ui.large.button.green.lastVid-button").on("click", function() {
         $(this).addClass("loading disabled");
+        const currentCard = $(".ui.fluid.card:visible");
+        // If current video is not paused, pause video.
+        if (!currentCard.find("video")[0].paused) {
+            currentCard.find("video").trigger("pause");
+        }
         if (window.location.pathname == "/tutorial") {
             window.location.href = "/trans";
         } else {
