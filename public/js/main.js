@@ -1,10 +1,10 @@
-//Before Page load:
+// Before Page load
 let isActive = false;
 let activeStartTime;
 
-//Called when user is inactive for about 1 minute, when user logs out of the website, when user changes the page (page and video)
-//Adds the amount of time use was active on the website for
-async function resetActiveTimer(loggingOut, fromIdle) {
+// Called when user is inactive for about 1 minute, when user logs out of the website, when user changes the page (page and video)
+// Adds the amount of time use was active on the website for
+function resetActiveTimer(loggingOut, fromIdle) {
     if (isActive) {
         const currentTime = new Date();
         const activeDuration = currentTime - activeStartTime - (fromIdle ? 60000 : 0);
@@ -15,15 +15,16 @@ async function resetActiveTimer(loggingOut, fromIdle) {
                 const index = currentCard.attr("index"); // postID (i.e. 0, 1, 2, 3, 4)
                 pathname += `?v=${index}`;
             }
-            await $.post("/pageTimes", {
+            $.post("/pageTimes", {
                 time: activeDuration,
                 pathname: pathname,
                 _csrf: $('meta[name="csrf-token"]').attr('content')
-            })
-            if (loggingOut) {
-                window.loggingOut = true;
-                window.location.href = '/logout';
-            }
+            }).then(function() {
+                if (loggingOut) {
+                    window.loggingOut = true;
+                    window.location.href = '/logout';
+                }
+            });
         }
         isActive = false;
     }

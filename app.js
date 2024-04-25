@@ -6,8 +6,6 @@ const compression = require('compression');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
-const errorHandler = require('errorhandler');
-const lusca = require('lusca');
 const dotenv = require('dotenv');
 const MongoStore = require('connect-mongo');
 const flash = require('express-flash');
@@ -19,29 +17,6 @@ const multer = require('multer');
 const fs = require('fs');
 const util = require('util');
 fs.readFileAsync = util.promisify(fs.readFile);
-
-/**
- * Middleware for handling multipart/form-data, which is primarily used for uploading files.
- * Files are uploaded when user's upload their profile photos and post photos.
- */
-var userpost_options = multer.diskStorage({
-    destination: path.join(__dirname, 'uploads/user_post'),
-    filename: function(req, file, cb) {
-        var lastsix = req.user.id.substr(req.user.id.length - 6);
-        var prefix = lastsix + Math.random().toString(36).slice(2, 10);
-        cb(null, prefix + file.originalname.replace(/[^A-Z0-9]+/ig, "_"));
-    }
-});
-var useravatar_options = multer.diskStorage({
-    destination: path.join(__dirname, 'uploads/user_avatar'),
-    filename: function(req, file, cb) {
-        var prefix = req.user.id + Math.random().toString(36).slice(2, 10);
-        cb(null, prefix + file.originalname.replace(/[^A-Z0-9]+/ig, "_"));
-    }
-});
-
-const userpostupload = multer({ storage: userpost_options });
-const useravatarupload = multer({ storage: useravatar_options });
 
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
@@ -129,23 +104,6 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
-// app.use((req, res, next) => {
-//     // Multer multipart/form-data handling needs to occur before the Lusca CSRF check.
-//     // This allows us to not check CSRF when uploading an image file. It's a weird issue that multer and lusca do not play well together.
-//     if ((req.path === '/post/new') || (req.path === '/account/profile') || (req.path === '/account/signup_info_post')) {
-//         console.log("Not checking CSRF. Out path now");
-//         next();
-//     } else {
-//         lusca.csrf()(req, res, next);
-//     }
-// });
-
-// app.use(lusca.xframe('SAMEORIGIN'));
-// app.use(lusca.xssProtection(true));
-// app.disable('x-powered-by');
-// allow-from https://example.com/
-// add_header X-Frame-Options "allow-from https://cornell.qualtrics.com/";
-// app.use(lusca.xframe('allow-from https://cornell.qualtrics.com/'));
 app.use((req, res, next) => {
     res.locals.user = req.user;
     // res.locals.cdn = process.env.CDN;
@@ -176,58 +134,12 @@ app.use('/profile_pictures', express.static(path.join(__dirname, 'profile_pictur
 /**
  * Primary app routes.
  */
-app.get('/', passportConfig.isAuthenticated, scriptController.getScript);
-
-// app.post('/post/new', userpostupload.single('picinput'), csrf, scriptController.newPost);
 app.post('/pageLog', passportConfig.isAuthenticated, userController.postPageLog);
 app.post('/pageTimes', passportConfig.isAuthenticated, userController.postPageTime);
 app.post('/messageSeen', passportConfig.isAuthenticated, scriptController.postMessageSeen);
 
-// app.get('/com', function(req, res) {
-//     const feed = req.query.feed == "true" ? true : false; //Are we accessing the community rules from the feed?
-//     res.render('com', {
-//         title: 'Community Rules',
-//         feed
-//     });
-// });
-
-// app.get('/info', passportConfig.isAuthenticated, function(req, res) {
-//     res.render('info', {
-//         title: 'User Docs'
-//     });
-// });
-
-// app.get('/tos', function(req, res) {
-//     res.render('tos', {
-//         title: 'TOS'
-//     });
-// });
-
-app.get('/completed', passportConfig.isAuthenticated, userController.userTestResults);
-
-// app.get('/notifications', passportConfig.isAuthenticated, notificationController.getNotifications);
-
-// app.get('/login', userController.getLogin); //Renders home page
-// app.post('/login', userController.postLogin); //One-shot study doesn't require "logging in"
-app.get('/logout', userController.logout);
-// app.get('/forgot', userController.getForgot);
-app.get('/signup', userController.getSignup); //Renders username/profile photo Page
-app.get('/thankyou', function(req, res) {
-    res.render('thankyou', {
-        title: 'Thank you!',
-    })
-}); //Renders Thank you page
-app.post('/signup', userController.postSignup); //Creates new user or updates old user based on form fields
-
-// app.get('/account', passportConfig.isAuthenticated, userController.getAccount);
-// app.post('/account/password', passportConfig.isAuthenticated, userController.postUpdatePassword);
-// app.post('/account/profile', passportConfig.isAuthenticated, useravatarupload.single('picinput'), csrf, userController.postUpdateProfile);
-// app.get('/account/signup_info', passportConfig.isAuthenticated, function(req, res) {
-//     res.render('account/signup_info', {
-//         title: 'Add Information'
-//     });
-// });
-// app.post('/account/signup_info_post', passportConfig.isAuthenticated, useravatarupload.single('picinput'), csrf, userController.postSignupInfo);
+app.get('/signup', userController.getSignup);
+app.post('/signup', userController.postSignup);
 app.get('/account/interest', passportConfig.isAuthenticated, async function(req, res) {
     const data = await fs.readFileAsync(`${__dirname}/public/json/interestData.json`)
     const interestData = JSON.parse(data.toString());
@@ -237,14 +149,11 @@ app.get('/account/interest', passportConfig.isAuthenticated, async function(req,
         interestData
     });
 });
-app.post('/account/interest', passportConfig.isAuthenticated, userController.postInterestInfo)
+app.post('/account/interest', passportConfig.isAuthenticated, userController.postInterestInfo);
+app.get('/logout', userController.logout);
+app.get('/completed', passportConfig.isAuthenticated, userController.userTestResults);
 
-// app.get('/me', passportConfig.isAuthenticated, userController.getMe);
-// app.get('/user/:userId', passportConfig.isAuthenticated, actorsController.getActor);
-// app.post('/user', passportConfig.isAuthenticated, actorsController.postBlockReportOrFollow);
-app.get('/actors', actorsController.getActors)
-
-app.get('/feed', passportConfig.isAuthenticated, scriptController.getScript);
+app.get('/', passportConfig.isAuthenticated, scriptController.getScript);
 app.post('/feed', passportConfig.isAuthenticated, scriptController.postUpdateFeedAction);
 app.get('/tutorial', passportConfig.isAuthenticated, scriptController.getScriptTutorial);
 app.get('/trans', passportConfig.isAuthenticated, function(req, res) {
@@ -252,12 +161,15 @@ app.get('/trans', passportConfig.isAuthenticated, function(req, res) {
         title: 'Instructions'
     });
 });
-// app.post('/userPost_feed', passportConfig.isAuthenticated, scriptController.postUpdateUserPostFeedAction);
-// app.get('/test', passportConfig.isAuthenticated, function(req, res) {
-//     res.render('test', {
-//         title: 'Test'
-//     })
-// });
+app.get('/thankyou', function(req, res) {
+    res.render('thankyou', {
+        title: 'Thank you!',
+    })
+});
+
+app.get('/actors', actorsController.getActors);
+app.get('/postTimeStamps', scriptController.getPostTimeStamps);
+app.get('/userProfile', userController.getUserProfile);
 
 /**
  * Error Handler.

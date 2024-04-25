@@ -109,7 +109,6 @@ exports.logout = async(req, res) => {
         req.session.destroy((err) => {
             if (err) console.log('Error : Failed to destroy the session during logout.', err);
             req.user = null;
-            console.log(req.user);
             res.redirect('/thankyou');
         });
     });
@@ -440,6 +439,24 @@ exports.getForgot = (req, res) => {
         title: 'Forgot Password'
     });
 };
+
+
+/**
+ * GET /userInfo
+ * Get user profile and number of user comments
+ */
+exports.getUserProfile = async(req, res) => {
+    try {
+        const user = await User.findById(req.user.id).exec();
+        res.set('Content-Type', 'application/json; charset=UTF-8');
+        res.send({
+            userProfile: user.profile,
+            numComments: user.numComments
+        });
+    } catch (err) {
+        next(err);
+    }
+}
 
 /**
  * Deactivate accounts who are completed with the study, except for admin accounts. Called 3 times a day. Scheduled via CRON jobs in app.js

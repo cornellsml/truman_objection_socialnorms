@@ -112,7 +112,7 @@ $(window).on("load", async function() {
                 if (json["result"] === "success") {
                     window.location.href = '/account/interest';
                 }
-            });;
+            });
         } else {
             if (username === undefined || username.trim() === '') {
                 if ($('.ui.warning.message.username').is(":hidden")) {

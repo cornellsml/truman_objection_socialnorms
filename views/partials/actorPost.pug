@@ -1,5 +1,3 @@
--const postTimeStampsDict = val.comments.reduce(function(dict, commentObj) {dict[commentObj.time] ? dict[commentObj.time].push(commentObj.commentID) : dict[commentObj.time] = [commentObj.commentID]; commentObj.subcomments.length > 0 ? commentObj.subcomments.forEach(function(subcomment) { dict[subcomment.time] ? dict[subcomment.time].push(subcomment.commentID) : dict[subcomment.time] = [subcomment.commentID]; }) : null; return dict;}, {})
--const postTimeStamps = Object.keys(postTimeStampsDict).map(Number).sort((a,b) => a-b)
 .ui.fluid.card(class=index!=0?"hidden":null, postID=val.id, index=val.postID, postClass=val.class, postTimeStamps=postTimeStamps, postTimeStampsDict=postTimeStampsDict)
   .content.title
     h2 !{val.body}

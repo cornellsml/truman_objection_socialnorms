@@ -18,8 +18,8 @@ block content
     
 block scripts
   script.
-    var numComments = !{JSON.stringify(user.numComments)};
-    var userProfile = !{JSON.stringify(user.profile)};
+    window.script={}
+    script.firstVideoIndex=!{script[0].postID}
   script(src='/public/js/script.js')
   script(src='/public/js/lib/jquery.highlight-within-textarea.js')
   script(src='/public/js/postFunctionalities.js')

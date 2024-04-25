@@ -1,3 +1,11 @@
+async function getUserInformation() {
+    const data = await $.get("/userProfile");
+    script.userProfile = data.userProfile;
+    script.numComments = data.numComments;
+}
+
+getUserInformation();
+
 function likePost(e) {
     const target = $(e.target).closest('.ui.like.button');
     const post = target.closest(".ui.fluid.card");
@@ -296,15 +304,15 @@ function addCommentToVideo(e) {
         const videoTime = card.find("video")[0].currentTime * 1000;
         const date = Date.now();
         const postID = card.attr("postID");
-        const commentID = numComments + 1 + 100;
+        const commentID = script.numComments + 1 + 100;
 
         const mess = `
         <div class="comment" commentID=${commentID} index=${commentID}>
-            <div class="image" style="background-color:${userProfile.color}">
-                <a class="avatar"><img src="${userProfile.picture}"></a>
+            <div class="image" style="background-color:${script.userProfile.color}">
+                <a class="avatar"><img src="${script.userProfile.picture}"></a>
             </div>
             <div class="content"> 
-                <a class="author /me">${userProfile.name} (me)</a>
+                <a class="author /me">${script.userProfile.name} (me)</a>
                 <div class="metadata"> 
                     <span class="date">0:${videoTime/1000<10 ? "0" + Math.floor(videoTime/1000) : Math.floor(videoTime/1000)}</span>
                 </div> 
@@ -340,7 +348,7 @@ function addCommentToVideo(e) {
             postClass: postClass,
             _csrf: $('meta[name="csrf-token"]').attr('content')
         }).then(function(json) {
-            numComments = json.numComments;
+            script.numComments = json.numComments;
         });
     }
 }
@@ -355,8 +363,8 @@ function changeColor(e, string = "") {
 }
 
 function openCommentReply(e) {
-    const photo = userProfile.picture;
-    const color = userProfile.color;
+    const photo = script.userProfile.picture;
+    const color = script.userProfile.color;
     const target = $(e.target).parents('.content');
     const reply_to = target.children('a.author').text().replace(" (me)", "");
     const form = target.children('.ui.form');
@@ -435,17 +443,17 @@ function addCommentToComment(e) {
         const date = Date.now();
         const postID = card.attr("postID");
         const postClass = card.attr("postClass");
-        const commentID = numComments + 1 + 100;
+        const commentID = script.numComments + 1 + 100;
         const reply_to = orig_comment.children(".content").children("a.author").hasClass('/me') ? orig_comment.attr('commentID') : orig_comment.attr('index');
         const parent_comment = form.parents(".comment").last().attr('index');
 
         const mess =
             `<div class="comment" commentID=${commentID}>
-            <div class="image" style="background-color:${userProfile.color}">
-                <a class="avatar"><img src="${userProfile.picture}"></a>
+            <div class="image" style="background-color:${script.userProfile.color}">
+                <a class="avatar"><img src="${script.userProfile.picture}"></a>
             </div>
             <div class="content"> 
-                <a class="author /me">${userProfile.name} (me)</a>
+                <a class="author /me">${script.userProfile.name} (me)</a>
                 <div class="metadata"> 
                     <span class="date">0:${videoTime/1000<10 ? "0" + Math.floor(videoTime/1000) : Math.floor(videoTime/1000)}</span>
                 </div> 
@@ -489,7 +497,7 @@ function addCommentToComment(e) {
             parent_comment: parent_comment,
             _csrf: $('meta[name="csrf-token"]').attr('content')
         }).then(function(json) {
-            numComments = json.numComments;
+            script.numComments = json.numComments;
         });
     }
 }
