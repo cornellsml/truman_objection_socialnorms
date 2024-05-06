@@ -172,8 +172,11 @@ exports.postSignup = async(req, res, next) => {
             harassmentOrder = [];
             break;
         case "Few":
-            harassmentComments = [0, 1, 2]; // 3 online harassments
-            harassmentOrder = shuffle(harassmentComments);
+            // 3 online harassments
+            harassmentOrder = [];
+            harassmentOrder.push(shuffle([0, 3])[0]);
+            harassmentOrder.push(shuffle([1, 4])[0]);
+            harassmentOrder.push(shuffle([2, 5])[0]);
             break;
         case "Many":
             harassmentComments = [0, 1, 2, 3, 4, 5]; // 6 online harassments
