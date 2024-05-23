@@ -13,7 +13,6 @@ const path = require('path');
 const mongoose = require('mongoose');
 const passport = require('passport');
 const schedule = require('node-schedule');
-const multer = require('multer');
 const fs = require('fs');
 const util = require('util');
 fs.readFileAsync = util.promisify(fs.readFile);
@@ -29,7 +28,6 @@ dotenv.config({ path: '.env' });
 const actorsController = require('./controllers/actors');
 const scriptController = require('./controllers/script');
 const userController = require('./controllers/user');
-const notificationController = require('./controllers/notification');
 
 /**
  * API keys and Passport configuration.
@@ -49,31 +47,6 @@ mongoose.connection.on('error', (err) => {
     console.error(err);
     console.log('%s MongoDB connection error. Please make sure MongoDB is running.');
     process.exit();
-});
-
-/**
- * Cron Jobs:
- * Check if users are still active every 8 hours (at 4:30am, 12:30pm, and 20:30pm).
- */
-const rule1 = new schedule.RecurrenceRule();
-rule1.hour = 4;
-rule1.minute = 30;
-const j = schedule.scheduleJob(rule1, function() {
-    userController.stillActive();
-});
-
-const rule2 = new schedule.RecurrenceRule();
-rule2.hour = 12;
-rule2.minute = 30;
-const j2 = schedule.scheduleJob(rule2, function() {
-    userController.stillActive();
-});
-
-const rule3 = new schedule.RecurrenceRule();
-rule3.hour = 20;
-rule3.minute = 30;
-const j3 = schedule.scheduleJob(rule3, function() {
-    userController.stillActive();
 });
 
 /**

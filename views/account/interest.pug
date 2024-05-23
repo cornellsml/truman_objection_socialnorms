@@ -1,8 +1,5 @@
 extends ../ui_layout
 
-block styles 
-    link(type='text/css', rel='stylesheet', href='/public/css/interest.css')
-
 block content
     .thirteen.wide.column.centered
         h2(style="text-align: center;") Choose an interest
@@ -23,5 +20,8 @@ block content
             i.rocket.icon
             |   Let's Go!
 
+block styles 
+    link(type='text/css', rel='stylesheet', href='/public/css/interest.css')
+    
 block scripts
     script(src='/public/js/interest.js')

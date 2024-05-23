@@ -1,8 +1,5 @@
 extends ../ui_layout
 
-block styles 
-    link(type='text/css', rel='stylesheet', href='/public/css/signup.css')
-
 block content
   -var initials = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"] 
   -var photos = ['/1_ant.svg', '/2_bear.svg', '/3_butterfly.svg', '/4_cat.svg','/5_chicken.svg','/6_crab.svg','/7_deer.svg','/8_gorilla.svg','/9_dog.svg','/10_monkey.svg']
@@ -64,5 +61,8 @@ block content
       i.arrow.alternate.circle.right.icon
       | Create Account
 
+block styles 
+    link(type='text/css', rel='stylesheet', href='/public/css/signup.css')
+    
 block scripts
   script(src='/public/js/signup.js')

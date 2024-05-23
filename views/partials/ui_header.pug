@@ -16,3 +16,13 @@
   .ui.fluid.top.fixed.four.item.menu
     a.item(href='')
       img.ui.image(src='https://dhpd030vnpk29.cloudfront.net/truman-objections/logo.svg', id='cell_logo', width='150px')
+    if user
+      a.item
+        .right.menu
+          .ui.simple.dropdown.item
+            .image
+              img.ui.image.rounded(src=user.profile.picture)
+            span(style="margin-right: 5px;")= user.username
+            i.dropdown.icon
+            .left.menu
+              a.item.logoutLink Log Out

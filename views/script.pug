@@ -16,6 +16,12 @@ block content
         i.chevron.right.icon
     .ui.large.button.green.lastVid-button.hidden(style="bottom: 10px; position: fixed;") Continue
     
+block styles 
+  link(type='text/css', rel='stylesheet', href='/public/css/script.css')
+  if disabledFunctionalitiies
+    link(type='text/css', rel='stylesheet', href='/public/css/tutorial.css')
+  link(type='text/css', rel='stylesheet', href='/public/css/jquery.highlight-within-textarea.css')
+  
 block scripts
   script.
     window.script={}
@@ -23,9 +29,3 @@ block scripts
   script(src='/public/js/script.js')
   script(src='/public/js/lib/jquery.highlight-within-textarea.js')
   script(src='/public/js/postFunctionalities.js')
-
-block styles 
-  link(type='text/css', rel='stylesheet', href='/public/css/script.css')
-  if disabledFunctionalitiies
-    link(type='text/css', rel='stylesheet', href='/public/css/tutorial.css')
-  link(type='text/css', rel='stylesheet', href='/public/css/jquery.highlight-within-textarea.css')

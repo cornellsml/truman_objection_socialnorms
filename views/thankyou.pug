@@ -1,8 +1,5 @@
 extends ./ui_layout
 
-block styles 
-    link(type='text/css', rel='stylesheet', href='/public/css/signup.css')
-
 block content
   .thirteen.wide.column.centered
     h2(style="text-align:center; font-weight: normal;") Thank you for engaging on
@@ -12,3 +9,6 @@ block content
     h2(style="text-align:center;") Please now 
       span(style="text-decoration: underline") return to the Qualtrics Survey
       | &nbsp; to answer some questions.
+      
+block styles 
+    link(type='text/css', rel='stylesheet', href='/public/css/signup.css')

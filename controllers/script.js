@@ -1,7 +1,4 @@
-const Script = require('../models/Script.js');
 const User = require('../models/User');
-const Actor = require('../models/Actor');
-const Notification = require('../models/Notification');
 const helpers = require('./helpers');
 const _ = require('lodash');
 

@@ -164,31 +164,6 @@ const userSchema = new mongoose.Schema({
 }, { timestamps: true, versionKey: false });
 
 /**
- * Password hash middleware.
- */
-userSchema.pre('save', async function save(next) {
-    const user = this;
-    if (!user.isModified('password')) { return next(); }
-    try {
-        user.password = await bcrypt.hash(user.password, 10);
-        next();
-    } catch (err) {
-        next(err);
-    }
-});
-
-/**
- * Helper method for validating user's password.
- */
-userSchema.methods.comparePassword = async function comparePassword(candidatePassword, cb) {
-    try {
-        cb(null, await bcrypt.verify(candidatePassword, this.password));
-    } catch (err) {
-        cb(err);
-    }
-};
-
-/**
  * Add login instance to user.log
  */
 userSchema.methods.logUser = async function logUser(time, agent, ip) {
@@ -217,74 +192,6 @@ userSchema.methods.logPage = async function logPage(time, page) {
     } catch (err) {
         console.log(err);
     }
-};
-
-/** 
- * Calculate stats: Basic user statistics (not comprehensive) 
- * Also displayed in /completed (Admin Dashboard) for admin accounts.
- */
-userSchema.methods.logPostStats = function logPage() {
-    const counts = this.feedAction.reduce(function(newCount, feedAction) {
-            const numLikes = feedAction.comments.filter(comment => comment.liked && !comment.new_comment).length;
-            const numNewComments = feedAction.comments.filter(comment => comment.new_comment).length;
-
-            newCount[0] += numLikes;
-            newCount[1] += numNewComments;
-            return newCount;
-        }, [0, 0], //[actorCommentLikes, newComments]
-    );
-
-    const log = {
-        SiteVisits: this.log.length,
-        GeneralTimeSpent: this.pageTimes.reduce((partialSum, a) => partialSum + a, 0),
-        GeneralPostNumber: this.numPosts + 1,
-        GeneralPostLikes: this.feedAction.filter(feedAction => feedAction.liked).length,
-        GeneralCommentLikes: counts[0],
-        GeneralPostComments: counts[1]
-    }
-    this.postStats = log;
-};
-
-/**
- * Helper method for getting all User Posts.
- */
-userSchema.methods.getPosts = function getPosts() {
-    let ret = this.posts;
-    ret.sort(function(a, b) {
-        return b.relativeTime - a.relativeTime;
-    });
-    for (const post of ret) {
-        post.comments.sort(function(a, b) {
-            return a.relativeTime - b.relativeTime;
-        });
-    }
-    return ret;
-};
-
-// Return the user post from its ID
-userSchema.methods.getUserPostByID = function(postID) {
-    return this.posts.find(x => x.postID == postID);
-};
-
-// Get user posts within the min/max time period
-userSchema.methods.getPostInPeriod = function(min, max) {
-    return this.posts.filter(function(post) {
-        return post.relativeTime >= min && post.relativeTime <= max;
-    });
-}
-
-/**
- * Helper method for getting user's gravatar.
- */
-userSchema.methods.gravatar = function gravatar(size) {
-    if (!size) {
-        size = 200;
-    }
-    if (!this.email) {
-        return `https://gravatar.com/avatar/?s=${size}&d=retro`;
-    }
-    const md5 = crypto.createHash('md5').update(this.email).digest('hex');
-    return `https://gravatar.com/avatar/${md5}?s=${size}&d=retro`;
 };
 
 const User = mongoose.model('User', userSchema);
