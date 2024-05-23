@@ -274,7 +274,7 @@ function shareComment(e) {
     const target = $(e.target);
     const comment = target.closest(".comment");
     const postID = target.closest(".ui.fluid.card").attr("postID");
-    const postClass = target.closest(".ui.fluid.card").attr("postClass");;
+    const postClass = target.closest(".ui.fluid.card").attr("postClass");
     const commentID = comment.attr("commentID");
     const isUserComment = comment.children(".content").children("a.author").hasClass('/me');
     const share = Date.now();
