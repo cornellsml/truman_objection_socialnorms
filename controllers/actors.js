@@ -1,6 +1,4 @@
 const Actor = require('../models/Actor.js');
-const Script = require('../models/Script.js');
-const User = require('../models/User');
 
 /**
  * GET /actors

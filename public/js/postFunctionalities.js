@@ -314,7 +314,7 @@ function addCommentToVideo(e) {
             <div class="content"> 
                 <a class="author /me">${script.userProfile.name} (me)</a>
                 <div class="metadata"> 
-                    <span class="date">0:${videoTime/1000<10 ? "0" + Math.floor(videoTime/1000) : Math.floor(videoTime/1000)}</span>
+                    <span class="date">Just now</span>
                 </div> 
                 <div class="text">${text}</div>
                 <div class="actions"> 
@@ -455,7 +455,7 @@ function addCommentToComment(e) {
             <div class="content"> 
                 <a class="author /me">${script.userProfile.name} (me)</a>
                 <div class="metadata"> 
-                    <span class="date">0:${videoTime/1000<10 ? "0" + Math.floor(videoTime/1000) : Math.floor(videoTime/1000)}</span>
+                    <span class="date">Just now</span>
                 </div> 
                 <div class="text">${text}</div>
                 <div class="actions"> 
@@ -503,6 +503,15 @@ function addCommentToComment(e) {
 }
 
 $(window).on('load', () => {
+    //add humanized time to all posts
+    $('span.date').each(function() {
+        const ms = parseInt($(this).text(), 10);
+        const time = new Date(ms);
+        $(this).text(humanized_time_span(time));
+    });
+
+    $('.ui.comments').show();
+
     // ************ Actions on Main Post ***************
 
     // Press enter to submit a comment

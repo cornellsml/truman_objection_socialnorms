@@ -24,56 +24,6 @@ const userSchema = new mongoose.Schema({
 
     interest: String, //'Science', 'Lifestyle', 'Education'
 
-    offenseMessagesSeen: {
-        offense1: {
-            seen: { type: Boolean, default: false },
-            time: Date,
-        },
-        offense2: {
-            seen: { type: Boolean, default: false },
-            time: Date,
-        },
-        offense3: {
-            seen: { type: Boolean, default: false },
-            time: Date,
-        },
-        offense4: {
-            seen: { type: Boolean, default: false },
-            time: Date,
-        },
-        offense5: {
-            seen: { type: Boolean, default: false },
-            time: Date,
-        },
-        offense6: {
-            seen: { type: Boolean, default: false },
-            time: Date,
-        },
-        offense7: {
-            seen: { type: Boolean, default: false },
-            time: Date,
-        }
-    },
-
-    objectionMessagesSeen: {
-        objection1: {
-            seen: { type: Boolean, default: false },
-            time: Date,
-        },
-        objection2: {
-            seen: { type: Boolean, default: false },
-            time: Date,
-        },
-        objection3: {
-            seen: { type: Boolean, default: false },
-            time: Date,
-        },
-        objection4: {
-            seen: { type: Boolean, default: false },
-            time: Date,
-        }
-    },
-
     log: [new Schema({ //Logins
         time: Date,
         userAgent: String,
@@ -90,21 +40,6 @@ const userSchema = new mongoose.Schema({
         time: Number, //in millliseconds
         page: String //URL
     })],
-
-    postStats: {
-        SiteVisits: Number, //Total number of times the user has logged into the website
-        Day1_visit: Number, //Number of times the user has logged into the website on Day 1
-        Day2_visit: Number, //Number of times the user has logged into the website on Day 2
-        GeneralTimeSpent: Number, //Time spent on website
-        Day1_timespent: Number, //Time spent on website on Day 1
-        Day2_timespent: Number, //Time spent on website on Day 2
-        GeneralPostNumber: Number, //# of posts made by user
-        Day1_posts: Number, //# of posts made by user on Day 1
-        Day2_posts: Number, //# of posts made by user on Day 2
-        GeneralPostLikes: Number, //# of posts liked
-        GeneralCommentLikes: Number, //# of likes on comments
-        GeneralPostComments: Number, //# of comments left on normal posts
-    },
 
     feedAction: [new Schema({
         post: { type: Schema.ObjectId, ref: 'Script' },

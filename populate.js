@@ -194,10 +194,10 @@ async function doPopulate() {
                                     likes: new_reply.likes || getLikesComment(),
                                     unlikes: new_reply.dislikes || getUnlikesComment(),
                                     actor: act,
-                                    time: new_reply.time || null,
+                                    time: new_reply.time ? timeStringToNum(new_reply.time) : null,
                                     class: new_reply.class,
 
-                                    objectionTime: new_reply.objection_time,
+                                    objectionTime: new_reply.objection_time ? timeStringToNum(new_reply.objection_time) : null,
 
                                     subcomments: []
                                 };
@@ -214,7 +214,7 @@ async function doPopulate() {
                                 }
 
                                 pr.comments.push(comment_detail);
-                                pr.comments.sort(function(a, b) { return a.time - b.time; });
+                                pr.comments.sort(function(a, b) { return b.time - a.time; });
 
                                 try {
                                     await pr.save();

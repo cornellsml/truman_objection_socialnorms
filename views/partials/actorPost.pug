@@ -25,16 +25,19 @@
       .eleven.wide.column.centered
         h3 Comments
         .ui.divider(style="margin:0px;")
-        .ui.message
-          .content
-            i.icon.youtube.large(style="float:left; margin-right:10px;")
-            | Timed Comments is on. Comments linked to a specific time in the video will appear when the video hits that timestamp.
-        .ui.comments
+        .ui.form
+          .inline.field
+            .image
+              img.ui.image.rounded(src=user.profile.picture)
+            textarea.replyToVideo(name='replyToVideo' type='text' placeholder='Add a Comment...' rows='1' disabled=disabledFunctionalitiies? true: false)
+            i.big.send.link.icon.replyToVideo
+        h4(style="text-align: right; color: gray;") Sort by: Newest First
+        .ui.comments(style="display:none;")
           each comment in val.comments
-            .comment.hidden(commentID=comment.new_comment ? comment.commentID : comment.id, index=comment.commentID, commentClass=comment.class)
+            .comment(commentID=comment.new_comment ? comment.commentID : comment.id, index=comment.commentID, commentClass=comment.class)
               .content(class=!comment.flagged ? "transition hidden" : "")
                 .metadata  
-                  span.date 0:!{comment.time/1000<10 ? "0" + Math.floor(comment.time/1000) : Math.floor(comment.time/1000)}                                
+                  span.date !{user.createdAt.getTime() + comment.time}                             
                 .text(style="background-color: black; color: white; margin-right:2.5em; padding: 0.2em;")  You flagged this comment. The admins will review this comment further. We are sorry you had this experience.
                 .actions 
                   a.unflag Unflag
@@ -52,7 +55,7 @@
                 else 
                   a.author !{comment.actor.username}
                 .metadata
-                  span.date 0:!{comment.time/1000<10 ? "0" + Math.floor(comment.time/1000) : Math.floor(comment.time/1000)}
+                  span.date !{user.createdAt.getTime() + comment.time}
                 .text !{comment.body}
                 .actions 
                   a.like(class=comment.liked ? "green" : null)
@@ -65,12 +68,12 @@
                   if !comment.new_comment 
                     a.flag Flag
               if comment.subcomments.length!==0
-                .comments.subcomments.hidden
+                .comments.subcomments
                   each subcomment in comment.subcomments
-                    .comment.hidden(commentID=subcomment.new_comment ? subcomment.commentID : subcomment.id, index=subcomment.commentID, commentClass=subcomment.class)
+                    .comment(commentID=subcomment.new_comment ? subcomment.commentID : subcomment.id, index=subcomment.commentID, commentClass=subcomment.class)
                       .content(class=!subcomment.flagged ? "transition hidden" : "")
                         .metadata
-                          span.date 0:!{subcomment.time/1000<10 ? "0" + Math.floor(subcomment.time/1000) : Math.floor(subcomment.time/1000)}
+                          span.date !{user.createdAt.getTime() + subcomment.time}
                         .text(style="background-color: black; color: white; margin-right:2.5em; padding: 0.2em") You flagged this comment. The admins will review this comment further. We are sorry you had this experience.
                         .actions 
                           a.unflag Unflag
@@ -88,7 +91,7 @@
                           else 
                             a.author !{subcomment.actor.username}
                           .metadata
-                            span.date 0:!{subcomment.time/1000<10 ? "0" + Math.floor(subcomment.time/1000) : Math.floor(subcomment.time/1000)}
+                            span.date !{user.createdAt.getTime() + subcomment.time}
                           .text !{subcomment.body}
                           .actions 
                             a.like(class=subcomment.liked ? "green" : null)
@@ -100,9 +103,3 @@
                             a.reply Reply
                             if !subcomment.new_comment 
                               a.flag Flag
-        .ui.form
-          .inline.field
-            .image
-              img.ui.image.rounded(src=user.profile.picture)
-            textarea.replyToVideo(name='replyToVideo' type='text' placeholder='Add a Comment...' rows='1' disabled=disabledFunctionalitiies? true: false)
-            i.big.send.link.icon.replyToVideo

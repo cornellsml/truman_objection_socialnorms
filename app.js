@@ -109,7 +109,6 @@ app.use('/profile_pictures', express.static(path.join(__dirname, 'profile_pictur
  */
 app.post('/pageLog', passportConfig.isAuthenticated, userController.postPageLog);
 app.post('/pageTimes', passportConfig.isAuthenticated, userController.postPageTime);
-app.post('/messageSeen', passportConfig.isAuthenticated, scriptController.postMessageSeen);
 
 app.get('/signup', userController.getSignup);
 app.post('/signup', userController.postSignup);
@@ -124,7 +123,6 @@ app.get('/account/interest', passportConfig.isAuthenticated, async function(req,
 });
 app.post('/account/interest', passportConfig.isAuthenticated, userController.postInterestInfo);
 app.get('/logout', userController.logout);
-app.get('/completed', passportConfig.isAuthenticated, userController.userTestResults);
 
 app.get('/', passportConfig.isAuthenticated, scriptController.getScript);
 app.post('/feed', passportConfig.isAuthenticated, scriptController.postUpdateFeedAction);
@@ -141,7 +139,6 @@ app.get('/thankyou', function(req, res) {
 });
 
 app.get('/actors', actorsController.getActors);
-app.get('/postTimeStamps', scriptController.getPostTimeStamps);
 app.get('/userProfile', userController.getUserProfile);
 
 /**

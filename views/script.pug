@@ -8,13 +8,12 @@ block content
     each val, index in script
       include ./partials/actorPost
   .two.wide.column(style="text-align: left; padding: 0;")
-    button.circular.ui.icon.button.blue.big.centered.right(nextVid=script[1].postID, data-tooltip='Next Video', style="margin: 0;")
-      i.chevron.right.icon
     //- div is needed because a disabled button cannot display a tooltip.
-    div.lastVid-button.hidden(data-html="This is the last video.</br>Click continue to proceed.", data-position="top center", style="width: fit-content;")
+    div.right-button(data-html="Please wait to proceed to the next video.", data-position="top center", style="width: fit-content;")
       button.circular.ui.icon.button.blue.big.centered.disabled.right(nextVid=script[1].postID, style="margin: 0;")
         i.chevron.right.icon
-    .ui.large.button.green.lastVid-button.hidden(style="bottom: 10px; position: fixed;") Continue
+    div.lastVid-button.hidden(data-html="Please wait to continue.", data-position="top center", style="width: fit-content;bottom: 10px; position: fixed;")
+      .ui.large.button.green.fluid.disabled(style="margin:0px;") Continue
     
 block styles 
   link(type='text/css', rel='stylesheet', href='/public/css/script.css')

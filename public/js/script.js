@@ -1,74 +1,6 @@
 let seenMessages = {};
-
-async function getpostTimeStamps(postID) {
-    const data = await $.get("/postTimeStamps", {
-        postID: postID,
-        section: window.location.pathname == "/tutorial" ? "tutorial" : "feed"
-    });
-    script.postTimeStamps = data.postTimeStamps;
-    script.postTimeStampsDictionary = data.postTimeStampsDict;
-}
-
-getpostTimeStamps(script.firstVideoIndex); // Run at the same as the page loads.
-
-function showComment(commentElement) {
-    if (!commentElement.is(":visible")) {
-        if (commentElement.parent(".subcomments").length) {
-            if (!commentElement.parent(".subcomments").is(":visible")) {
-                commentElement.parent(".subcomments").transition("fade up");
-            }
-        }
-        commentElement.addClass("glowBorder", 1000).transition("fade up");
-        commentElement[0].scrollIntoView({
-            behavior: "smooth", // or "auto" or "instant"
-            block: "start" // or "end"
-        });
-        setTimeout(function() {
-            commentElement.removeClass("glowBorder", 1000);
-        }, 2500);
-
-        const commentClass = commentElement.attr("commentClass");
-        if (commentClass && commentClass != "R" && !seenMessages[commentClass]) {
-            $.post("/messageSeen", {
-                type: commentElement.attr("commentClass"),
-                _csrf: $("meta[name='csrf-token']").attr("content")
-            });
-            seenMessages[commentElement.attr("commentClass")] = true;
-        }
-    }
-}
-
-function videoTimeUpdateListener(event) {
-    for (const timestamp of script.postTimeStamps) {
-        if (this.currentTime * 1000 > timestamp) {
-            const comments = script.postTimeStampsDictionary[timestamp];
-            for (const comment of comments) {
-                const commentElement = $(`.comment[index=${comment}]`);
-                showComment(commentElement);
-            }
-        }
-    };
-}
-
-function videoEndListener(event) {
-    const post = $(this).parents(".ui.fluid.card");
-    const postID = post.attr("postID");
-
-    // At the end of the video, ensure all the comments appear.
-    for (const comment of post.find(".comment.hidden")) {
-        const commentElement = $(comment);
-        showComment(commentElement);
-    }
-
-    $.post("/feed", {
-        postID: postID,
-        videoAction: {
-            action: "ended",
-            absTime: Date.now(),
-        },
-        _csrf: $("meta[name='csrf-token']").attr("content")
-    });
-}
+let seenVideos = []; // List of videos the user has already visited. Used to determine if the 'Next Video' button should be disabled or not.
+let timeout;
 
 function videoGeneralListener(event) {
     const eventType = event.type;
@@ -78,8 +10,10 @@ function videoGeneralListener(event) {
     let videoAction = {
         action: eventType,
         absTime: Date.now(),
-        videoTime: this.currentTime
     };
+    if (eventType != "ended") {
+        videoAction.videoTime = this.currentTime;
+    }
     if (eventType == "volumechange") {
         videoAction.volume = (this.muted) ? 0 : this.volume;
     }
@@ -132,29 +66,34 @@ function videoPauseListener(event) {
 
 // JavaScript that handles functionalities related to script (newsfeed) videos 
 $(window).on("load", function() {
+    $(".right-button ").popup(); // Enables tooltip
+    $(".lastVid-button").popup();
+
     const numVideos = $("video").length;
     const firstVideoIndex = parseInt($(`.ui.fluid.card:visible`).attr("index"));
+
+    seenVideos.push(firstVideoIndex);
+    timeout = setTimeout(function() {
+        $(".right-button").popup('hide');
+        $(".right-button").attr("data-html", "Next Video");
+        $("button.right").removeClass('disabled');
+    }, 20000);
 
     $.post("/pageLog", {
         path: window.location.pathname + `?v=${$(".ui.fluid.card:visible").attr("index")}`,
         _csrf: $("meta[name='csrf-token']").attr("content")
     });
-    $(`.ui.fluid.card:visible video`)[0].play();
 
-    $("video").on("timeupdate", videoTimeUpdateListener);
-
-    $("video").on("ended", videoEndListener);
-
-    $("video").on("play seeked seeking volumechange", videoGeneralListener);
+    $("video").on("play seeked seeking volumechange ended", videoGeneralListener);
 
     $("video").on("pause", videoPauseListener);
 
     // Buttons to switch videos
-    $(".lastVid-button").popup(); // Enables tooltip
     let isTransitioning = false; // For debouncing to limit the frequency of click events
     $("button.circular.ui.icon.button.blue.centered").on("click", async function() {
         if (isTransitioning) return; // Exit early if a transition is already in progress
         isTransitioning = true; // Set transitioning flag
+        clearTimeout(timeout);
 
         const currentCard = $(".ui.fluid.card:visible");
         // If current video is not paused, pause video.
@@ -166,13 +105,12 @@ $(window).on("load", function() {
 
         // Transition to next video and play the video.
         const nextVid = parseInt($(this).attr("nextVid"));
-        getpostTimeStamps(nextVid);
         const index = nextVid - firstVideoIndex;
         $(".ui.fluid.card:visible").transition("hide");
         $(`.ui.fluid.card[index=${nextVid}]`).transition();
-        $(`.ui.fluid.card[index=${nextVid}] video`)[0].play();
 
         // Hide buttons accordingly and change button nextVid attribute
+        // Left Button
         if (index % numVideos == 0) {
             $("button.left").addClass("hidden");
         } else {
@@ -180,13 +118,43 @@ $(window).on("load", function() {
             $("button.left").attr("nextVid", nextVid - 1);
         }
 
+        // Right Button & "Continue" button
+        // If this is the last video
         if (index % numVideos == numVideos - 1) {
-            $("button.right:not(.disabled)").addClass("hidden");
+            $(".right-button").attr("data-html", "This is the last video.</br>Click continue to proceed.");
+            $("button.right").addClass('disabled');
             $(".lastVid-button").removeClass("hidden");
-        } else {
-            $("button.right:not(.disabled)").removeClass("hidden");
+            $(".lastVid-button").popup();
+            // The user has not watched the last video
+            if (!seenVideos.includes(nextVid)) {
+                timeout = setTimeout(function() {
+                    seenVideos.push(nextVid);
+                    $(".lastVid-button").popup('hide');
+                    $(".lastVid-button").removeAttr("data-html");
+                    $(".lastVid-button").removeAttr("data-position");
+                    $(".lastVid-button .button").removeClass('disabled');
+                }, 20000);
+            } else {
+                $(".lastVid-button .button").removeClass('disabled');
+            }
+        } // Else this is not the last video
+        else {
+            // If the user hasn't seen the video before
+            if (!seenVideos.includes(nextVid)) {
+                $(".right-button").attr("data-html", "Please wait to proceed to the next video.");
+                $("button.right").addClass('disabled');
+                timeout = setTimeout(function() {
+                    seenVideos.push(nextVid);
+                    $(".right-button").popup('hide');
+                    $(".right-button").attr("data-html", "Next Video");
+                    $("button.right").removeClass('disabled');
+                }, 20000);
+            } else {
+                $(".right-button").attr("data-html", "Next Video");
+                $("button.right").removeClass("disabled");
+            }
+            $("button.right").attr("nextVid", nextVid + 1);
             $(".lastVid-button").addClass("hidden");
-            $("button.right:not(.disabled)").attr("nextVid", nextVid + 1);
         }
 
         // Log new page
@@ -200,7 +168,7 @@ $(window).on("load", function() {
     });
 
     // Buttons to next page
-    $(".ui.large.button.green.lastVid-button").on("click", function() {
+    $(".lastVid-button .ui.large.button.green").on("click", function() {
         $(this).addClass("loading disabled");
         const currentCard = $(".ui.fluid.card:visible");
         // If current video is not paused, pause video.

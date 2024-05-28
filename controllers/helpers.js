@@ -52,7 +52,7 @@ exports.getFeed = async function(user) {
                             body: commentObject.body,
                             likes: commentObject.liked ? 1 : 0,
                             unlikes: commentObject.unliked ? 1 : 0,
-                            time: commentObject.videoTime,
+                            time: commentObject.relativeTime,
 
                             new_comment: commentObject.new_comment,
                             liked: commentObject.liked,
