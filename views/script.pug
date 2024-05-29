@@ -7,12 +7,12 @@ block content
   .twelve.wide.column
     each val, index in script
       include ./partials/actorPost
-  .two.wide.column(style="text-align: left; padding: 0;")
+  .two.wide.column(style="text-align: left; padding: 0; height: 100%; display: flex; align-items: center;")
     //- div is needed because a disabled button cannot display a tooltip.
     div.right-button(data-html="Please wait to proceed to the next video.", data-position="top center", style="width: fit-content;")
       button.circular.ui.icon.button.blue.big.centered.disabled.right(nextVid=script[1].postID, style="margin: 0;")
         i.chevron.right.icon
-    div.lastVid-button.hidden(data-html="Please wait to continue.", data-position="top center", style="width: fit-content;bottom: 10px; position: fixed;")
+    div.lastVid-button.hidden(data-html="Please wait to continue.", data-position="top center", style="width: fit-content;bottom: 15px; position: absolute;")
       .ui.large.button.green.fluid.disabled(style="margin:0px;") Continue
     
 block styles 
