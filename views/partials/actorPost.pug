@@ -30,14 +30,14 @@
               img.ui.image.rounded(src=user.profile.picture)
             textarea.replyToVideo(name='replyToVideo' type='text' placeholder='Add a Comment...' rows='1' disabled=disabledFunctionalitiies? true: false)
             i.big.send.link.icon.replyToVideo
-        h4(style="text-align: right; color: gray; margin: 1rem 0;") Sort by: Newest First
+        h4(style="text-align: right; color: gray;") Sort by: Newest First
         .ui.comments(style="display:none;")
           each comment in val.comments
             .comment(commentID=comment.new_comment ? comment.commentID : comment.id, index=comment.commentID, commentClass=comment.class)
               .content(class=!comment.flagged ? "transition hidden" : "")
                 .metadata  
                   span.date !{user.createdAt.getTime() + comment.time}                             
-                .text(style="background-color: black; color: white; margin-right:2.5em; padding: 0.2em;")  You flagged this comment. The admins will review this comment further. We are sorry you had this experience.
+                .text(style="background-color: black; color: white; padding: 0.2em;")  You flagged this comment. The admins will review this comment further. We are sorry you had this experience.
                 .actions 
                   a.unflag Unflag
               if comment.new_comment 
@@ -73,7 +73,7 @@
                       .content(class=!subcomment.flagged ? "transition hidden" : "")
                         .metadata
                           span.date !{user.createdAt.getTime() + subcomment.time}
-                        .text(style="background-color: black; color: white; margin-right:2.5em; padding: 0.2em") You flagged this comment. The admins will review this comment further. We are sorry you had this experience.
+                        .text(style="background-color: black; color: white; padding: 0.2em") You flagged this comment. The admins will review this comment further. We are sorry you had this experience.
                         .actions 
                           a.unflag Unflag
                       if subcomment.new_comment 
