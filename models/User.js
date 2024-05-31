@@ -9,18 +9,21 @@ const userSchema = new mongoose.Schema({
     isAdmin: { type: Boolean, default: false },
     completed: { type: Boolean, default: false },
 
-    numComments: { type: Number, default: -1 }, // # of comments on posts (user and actor), it is used for indexing and commentID of uesr comments on posts (user and actor)
+    numComments: { type: Number, default: -1 }, // # of comments on posts (actor), it is used for indexing and commentID of user comments on posts (actor)
 
     createdAt: Date, // Absolute Time user was created
     consent: { type: Boolean, default: false }, //Indicates if user has proceeded through welcome signup pages
 
     mturkID: { type: String, unique: true },
 
-    group: String, // [frequency of harassing comments]: [frequency of addressed harassment comments]
+    group: String, // [frequency of harassing comments]:[frequency of addressed harassment comments]
 
     harassmentOrder: [Number], // Values correspond to which harassment comment. Order of list indicates the order in which they appear.
     harassmentToObjectToOrder: [Number], // Values correspond to which harassment comment objection belongs to.
     objectionOrder: [Number], // Values correspond to which objection comment. 
+
+    commentTimes: [], // Lists of arrays of comment times for each video in the tutorial section.
+    subcommentTimes: [], // List of subcomment times (6 values for objection comments, corresponding to their order of replacement; 1 value for first video, first comment's subcomment)
 
     interest: String, //'Science', 'Lifestyle', 'Education'
 

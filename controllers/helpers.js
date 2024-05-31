@@ -208,35 +208,17 @@ exports.getTutorial = async function(user) {
     // For each interest, a list of harassment comments' locations is provided. 
     // Each element in the list gives a harassment location information: [Video Index, Comment Index, Objection time]. 
     // These locations are to be replaced with harassments & accompanying objections.
-    const videoIndexCommentIndex_HarassmentComments = {
-        "Science": [
-            [1, 0],
-            [4, 0],
-            [4, 3],
-            [2, 3],
-            [2, 4],
-            [3, 2]
-        ],
-        "Education": [
-            [1, 0],
-            [4, 0],
-            [4, 3],
-            [2, 3],
-            [2, 4],
-            [3, 2]
-        ],
-        "Lifestyle": [
-            [1, 0],
-            [4, 0],
-            [4, 3],
-            [2, 3],
-            [2, 4],
-            [3, 2]
-        ]
-    };
+    const videoIndexCommentIndex_HarassmentComments = [
+        [1, 0],
+        [4, 0],
+        [4, 3],
+        [2, 3],
+        [2, 4],
+        [3, 2]
+    ];
 
     for (const harassmentNum in user.harassmentOrder) {
-        const locationToReplace = videoIndexCommentIndex_HarassmentComments[user.interest][harassmentNum];
+        const locationToReplace = videoIndexCommentIndex_HarassmentComments[harassmentNum];
         script_feed[locationToReplace[0]].comments[locationToReplace[1]].body = harassmentComments[user.harassmentOrder[harassmentNum]];
         script_feed[locationToReplace[0]].comments[locationToReplace[1]].class = `offense${parseInt(harassmentNum)+1}`;
         script_feed[locationToReplace[0]].comments[locationToReplace[1]].likes = 1;
@@ -245,7 +227,7 @@ exports.getTutorial = async function(user) {
 
     for (const index in user.harassmentToObjectToOrder) {
         const harassmentNum = user.harassmentToObjectToOrder[index];
-        const locationToReplace = videoIndexCommentIndex_HarassmentComments[user.interest][harassmentNum];
+        const locationToReplace = videoIndexCommentIndex_HarassmentComments[harassmentNum];
 
         const subcomment = {
             commentID: commentID,
@@ -253,7 +235,7 @@ exports.getTutorial = async function(user) {
             likes: 0,
             unlikes: 0,
             actor: objectionActors[counter],
-            time: script_feed[locationToReplace[0]].comments[locationToReplace[1]].objectionTime,
+            time: user.subcommentTimes[counter],
             class: `objection${counter+1}`,
 
             new_comment: false,
@@ -265,6 +247,17 @@ exports.getTutorial = async function(user) {
         commentID++;
         counter++;
     }
+
+    // Add comment times to comments:
+    for (const video_index in script_feed) {
+        for (const comment_index in script_feed[video_index].comments) {
+            script_feed[video_index].comments[comment_index].time = user.commentTimes[video_index][comment_index];
+        }
+    }
+
+    // Add subcomment time to first video, first comment:
+    script_feed[0].comments[0].subcomments[0].time = user.subcommentTimes[6];
+
     script_feed = script_feed.map(function(post) {
         post.comments.sort(function(a, b) {
             return b.time - a.time;

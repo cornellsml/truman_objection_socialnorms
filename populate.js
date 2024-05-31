@@ -197,22 +197,19 @@ async function doPopulate() {
                                     time: new_reply.time ? timeStringToNum(new_reply.time) : null,
                                     class: new_reply.class,
 
-                                    objectionTime: new_reply.objection_time ? timeStringToNum(new_reply.objection_time) : null,
-
                                     subcomments: []
                                 };
 
                                 // Is a parent comment?
                                 if (new_reply.class == 'R') {
                                     parentComment = comment_detail;
-                                    return
+                                    return;
                                 } // Is a reply?
                                 else if (parentComment != null) {
                                     parentComment.subcomments.push(comment_detail);
                                     comment_detail = parentComment;
                                     parentComment = null;
                                 }
-
                                 pr.comments.push(comment_detail);
                                 pr.comments.sort(function(a, b) { return b.time - a.time; });
 

@@ -28,6 +28,18 @@ function makeid(length) {
     return result;
 }
 
+// create random comment time (between -86400 and -60 seconds, i.e. one day and 1 minute)
+function getRandomCommentTime() {
+    // Math.floor(Math.random() * (max - min + 1)) + min
+    return Math.floor((Math.random() * (86400 - 60 + 1) + 60)) * -1000;
+}
+
+// create random subcomment time (between -commentTime and -60 seconds, i.e. after the parent comment time and 1 minute)
+function getRandomSubCommentTime(commentTime) {
+    const maxCommentTime = (commentTime / -1000) - 60; // Indicates the subcomment must come at least 1 minute after original comment
+    return Math.floor((Math.random() * (maxCommentTime - 60 + 1) + 60)) * -1000;
+}
+
 /**
  * GET /login
  * Login page.
@@ -154,6 +166,37 @@ exports.postSignup = async(req, res, next) => {
             break;
     }
 
+    const numComments = [3, 3, 5, 3, 5, 3];
+    let commentTimes = [];
+    let subcommentTimes = [];
+
+    for (const video in numComments) {
+        let video_commentTimes = [];
+        for (let i = 1; i <= numComments[video]; i++) {
+            video_commentTimes.push(getRandomCommentTime());
+        }
+        commentTimes.push(video_commentTimes);
+    }
+
+    const videoIndexCommentIndex_HarassmentComments = [
+        [1, 0],
+        [4, 0],
+        [4, 3],
+        [2, 3],
+        [2, 4],
+        [3, 2]
+    ];
+
+    for (const harassmentComment of videoIndexCommentIndex_HarassmentComments) {
+        const video = harassmentComment[0];
+        const comment = harassmentComment[1];
+        const subcommentTime = getRandomSubCommentTime(commentTimes[video][comment]);
+        subcommentTimes.push(subcommentTime);
+    }
+
+    const firstVideo_subcommentTime = getRandomSubCommentTime(commentTimes[0][0]);
+    subcommentTimes.push(firstVideo_subcommentTime);
+
     try {
         const existingUser = await User.findOne({ mturkID: req.query.r_id }).exec();
         if (existingUser) {
@@ -174,6 +217,8 @@ exports.postSignup = async(req, res, next) => {
                 harassmentOrder: harassmentOrder,
                 harassmentToObjectToOrder: harassmentToObjectToOrder,
                 objectionOrder: objectionOrder,
+                commentTimes: commentTimes,
+                subcommentTimes: subcommentTimes,
                 active: true,
                 lastNotifyVisit: (Date.now()),
                 createdAt: (Date.now())

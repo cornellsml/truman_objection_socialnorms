@@ -23,8 +23,6 @@ const scriptSchema = new mongoose.Schema({
         time: Number, //time of comment in reference to video (in milliseconds)
         class: String, //For experimental use (used to define the type of comment, null, offense, control)
 
-        objectionTime: Number,
-
         subcomments: [new Schema({
             commentID: Number, // ID of the comment
             body: { type: String, default: '', trim: true }, //body of comment

@@ -1,7 +1,6 @@
 .ui.fluid.card(class=index!=0?"hidden":null, postID=val.id, index=val.postID, postClass=val.class, postTimeStamps=postTimeStamps, postTimeStampsDict=postTimeStampsDict)
   .content.title
     h2 !{val.body}
-      span(style="float: right; font-size: 0.8em; font-weight: normal;") 
   .content
     .ui.two.column.grid.stackable
       .five.wide.column.centered
@@ -31,7 +30,7 @@
               img.ui.image.rounded(src=user.profile.picture)
             textarea.replyToVideo(name='replyToVideo' type='text' placeholder='Add a Comment...' rows='1' disabled=disabledFunctionalitiies? true: false)
             i.big.send.link.icon.replyToVideo
-        h4(style="text-align: right; color: gray;") Sort by: Newest First
+        h4(style="text-align: right; color: gray; margin: 1rem 0;") Sort by: Newest First
         .ui.comments(style="display:none;")
           each comment in val.comments
             .comment(commentID=comment.new_comment ? comment.commentID : comment.id, index=comment.commentID, commentClass=comment.class)
