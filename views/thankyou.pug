@@ -8,7 +8,9 @@ block content
       | !
     h2(style="text-align:center;") Please now 
       span(style="text-decoration: underline") return to the Qualtrics Survey
-      | &nbsp; to answer some questions.
+    h2 
+      a(href=process.env.POST_SURVEY+r_id) !{process.env.POST_SURVEY+r_id}
+    h2 to answer some questions.
       
 block styles 
     link(type='text/css', rel='stylesheet', href='/public/css/signup.css')

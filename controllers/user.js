@@ -59,13 +59,14 @@ exports.getLogin = (req, res) => {
  */
 exports.logout = async(req, res) => {
     const user = await User.findById(req.user.id).exec();
+    const r_id = user.mturkID;
     user.logPage(Date.now(), '/thankyou');
     req.logout((err) => {
         if (err) console.log('Error : Failed to logout.', err);
         req.session.destroy((err) => {
             if (err) console.log('Error : Failed to destroy the session during logout.', err);
             req.user = null;
-            res.redirect('/thankyou');
+            res.redirect(`/thankyou?r_id=${r_id}`);
         });
     });
 };

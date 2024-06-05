@@ -135,6 +135,7 @@ app.get('/trans', passportConfig.isAuthenticated, function(req, res) {
 app.get('/thankyou', function(req, res) {
     res.render('thankyou', {
         title: 'Thank you!',
+        r_id: req.query.r_id
     })
 });
 
