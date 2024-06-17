@@ -4,7 +4,6 @@ dotenv.config({ path: '.env' });
 const Script = require('./models/Script.js');
 const User = require('./models/User.js');
 const mongoose = require('mongoose');
-const fs = require('fs');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 
 // Console.log color shortcuts
@@ -27,8 +26,9 @@ console.log(color_success, `Successfully connected to db.`);
   Gets the user models from the database specified in the .env file.
 */
 async function getUserJsons() {
+    const studyLaunchDate = new Date("2024-06-06T00:00:00.000Z")
     const users = await User
-        .find({ isAdmin: false })
+        .find({ isAdmin: false, createdAt: { $gte: studyLaunchDate } })
         .populate('feedAction.post')
         .exec();
     return users;
@@ -64,7 +64,7 @@ async function getDataExport() {
     console.log(color_start, `Starting the data export script...`);
     const currentDate = new Date();
     const outputFilename =
-        `truman_Objections-SocialNorms-preTest-dataExport` +
+        `truman_Objections-SocialNorms-preTest-2-dataExport` +
         `.${currentDate.getMonth()+1}-${currentDate.getDate()}-${currentDate.getFullYear()}` +
         `.${currentDate.getHours()}-${currentDate.getMinutes()}-${currentDate.getSeconds()}`;
     const outputFilepath = `./outputFiles/pretest/${outputFilename}.csv`;
@@ -73,22 +73,19 @@ async function getDataExport() {
         { id: 'username', title: "Username" },
         { id: 'Topic', title: 'Topic' },
         { id: 'Condition', title: 'Condition' },
-        { id: 'GeneralTimeSpent', title: 'GeneralTimeSpent (in sec)' },
-        { id: 'V1_timespent', title: 'V1_timespent (in sec)' },
-        { id: 'V2_timespent', title: 'V2_timespent (in sec)' },
-        { id: 'V3_timespent', title: 'V3_timespent (in sec)' },
-        { id: 'V4_timespent', title: 'V4_timespent (in sec)' },
-        { id: 'V5_timespent', title: 'V5_timespent (in sec)' },
-        { id: 'V6_timespent', title: 'V6_timespent (in sec)' },
-        { id: 'V7_timespent', title: 'V7_timespent (in sec)' },
-        { id: 'V8_timespent', title: 'V8_timespent (in sec)' },
-        { id: 'V9_timespent', title: 'V9_timespent (in sec)' },
-        { id: 'AvgTimeVideo', title: 'AvgTimeVideo (in sec)' },
+        { id: 'NumVideosVisited_Tutorial', title: 'NumVideosVisited_Tutorial (max: 6)' },
+        { id: 'NumVideosVisited_Behavioral', title: 'NumVideosVisited_Behavioral (max: 3)' },
+        { id: 'V1_visited', title: 'V1_visited (T/F)' },
+        { id: 'V2_visited', title: 'V2_visited (T/F)' },
+        { id: 'V3_visited', title: 'V3_visited (T/F)' },
+        { id: 'V4_visited', title: 'V4_visited (T/F)' },
+        { id: 'V5_visited', title: 'V5_visited (T/F)' },
+        { id: 'V6_visited', title: 'V6_visited (T/F)' },
+        { id: 'V7_visited', title: 'V7_visited (T/F)' },
+        { id: 'V8_visited', title: 'V8_visited (T/F)' },
+        { id: 'V9_visited', title: 'V9_visited (T/F)' },
+        { id: 'AvgTimeOnVideoPage', title: 'AvgTimeOnVideoPage (in secs)' },
         { id: 'PageLog', title: 'PageLog' },
-        { id: 'NumVideosCompleted_Tutorial', title: 'NumVideosCompleted_Tutorial' },
-        { id: 'NumVideosCompleted_Behavioral', title: 'NumVideosCompleted_Behavioral' },
-        { id: '#Off_appear', title: '#Off_appear' },
-        { id: '#Obj_appear', title: '#Obj_appear' },
         { id: 'VideoUpvoteNumber', title: 'VideoUpvoteNumber' },
         { id: 'VideoDownvoteNumber', title: 'VideoDownvoteNumber' },
         { id: 'VideoFlagNumber', title: 'VideoFlagNumber' },
@@ -108,10 +105,10 @@ async function getDataExport() {
         { id: 'V7_PostComments', title: 'V7_PostComments' },
         { id: 'V8_PostComments', title: 'V8_PostComments' },
         { id: 'V9_PostComments', title: 'V9_PostComments' },
-        { id: 'Off7_Appear', title: 'Off7_Appear' },
-        { id: 'Off7_Upvote', title: 'Off7_Upvote' },
-        { id: 'Off7_Downvote', title: 'Off7_Downvote' },
-        { id: 'Off7_Flag', title: 'Off7_Flag' },
+        { id: 'Off7_Appear', title: 'Off7_Appear (T/F)' },
+        { id: 'Off7_Upvote', title: 'Off7_Upvote(T/F)' },
+        { id: 'Off7_Downvote', title: 'Off7_Downvote (T/F)' },
+        { id: 'Off7_Flag', title: 'Off7_Flag (T/F)' },
         { id: 'Off7_Reply', title: 'Off7_Reply' },
         { id: 'Off7_ReplyBody', title: 'Off7_ReplyBody' },
         { id: 'V9_CommentBody', title: 'V9_CommentBody' },
@@ -123,61 +120,93 @@ async function getDataExport() {
     const records = [];
     // For each user
     for (const user of users) {
-        const record = {}; // Record for the user
+        // Set default values for record
+        const record = {
+            NumVideosVisited_Tutorial: 0,
+            NumVideosVisited_Behavioral: 0,
+            V1_visited: false,
+            V2_visited: false,
+            V3_visited: false,
+            V4_visited: false,
+            V5_visited: false,
+            V6_visited: false,
+            V7_visited: false,
+            V8_visited: false,
+            V9_visited: false,
+            AvgTimeOnVideoPage: 0,
+            VideoUpvoteNumber: 0,
+            VideoDownvoteNumber: 0,
+            VideoFlagNumber: 0,
+            CommentUpvoteNumber: 0,
+            V7_CommentUpvoteNumber: 0,
+            V8_CommentUpvoteNumber: 0,
+            V9_CommentUpvoteNumber: 0,
+            CommentDownvoteNumber: 0,
+            V7_CommentDownvoteNumber: 0,
+            V8_CommentDownvoteNumber: 0,
+            V9_CommentDownvoteNumber: 0,
+            CommentFlagNumber: 0,
+            V7_CommentFlagNumber: 0,
+            V8_CommentFlagNumber: 0,
+            V9_CommentFlagNumber: 0,
+            GeneralPostComments: 0,
+            V7_PostComments: 0,
+            V8_PostComments: 0,
+            V9_PostComments: 0
+        };
+
+        // Record for the user
         record.id = user.mturkID;
         record.username = user.username;
         record.Topic = user.interest;
         record.Condition = user.group;
+
+        // Extract pages visited on the website
+        let NumVideosVisited_Tutorial = 0;
+        let NumVideosVisited_Behavioral = 0;
+        let Off7_Appear = false;
+
+        for (const pageLog of user.pageLog) {
+            // Begin at v = 0, 1, 2, 3, 4, 5, 6, 7, 8
+            if (pageLog.page.startsWith("/?v=") || pageLog.page.startsWith("/tutorial?v=")) {
+                let page = parseInt((pageLog.page.replace(/\D/g, '') % 9) + 1);
+                if (record[`V${page}_visited`] == false) {
+                    record[`V${page}_visited`] = true;
+                    if (page <= 6) {
+                        NumVideosVisited_Tutorial++;
+                    } else {
+                        NumVideosVisited_Behavioral++;
+                    }
+                    if (page == 9) {
+                        Off7_Appear = true;
+                        record.Off7_Upvote = false;
+                        record.Off7_Downvote = false;
+                        record.Off7_Flag = false;
+                        record.Off7_Reply = false;
+                    }
+                }
+            }
+        }
+
+        record.NumVideosVisited_Tutorial = NumVideosVisited_Tutorial;
+        record.NumVideosVisited_Behavioral = NumVideosVisited_Behavioral;
+        record.Off7_Appear = Off7_Appear;
+
         if (!user.consent) {
-            record.NumberVideoCompleted = 0;
             records.push(record);
             continue;
         }
 
-        // Extract time spent on the website
-        let sumOnSite = 0;
-        let pageTimes = {};
-        for (const pageLog of user.pageTimes) {
-            // Begin at v = 0, 1, 2, 3, 4, 5, 6, 7, 8
-            if (pageLog.page.startsWith("/?v=") || pageLog.page.startsWith("/tutorial?v=")) {
-                let page = parseInt((pageLog.page.replace(/\D/g, '') % 9) + 1);
-                pageTimes[page] = (pageTimes[page] || 0) + pageLog.time;
-            }
-            sumOnSite += pageLog.time;
-        }
-        record.GeneralTimeSpent = sumOnSite / 1000;
-
         let sumOnVideos = 0;
         let numVideos = 0;
-        for (let key in pageTimes) {
-            if (pageTimes[key] > 1500) {
+        for (let pageTime of user.pageTimes) {
+            if (pageTime.time > 1500 && (pageTime.page.startsWith("/?v=") || pageTime.page.startsWith("/tutorial?v="))) {
                 numVideos++;
-                sumOnVideos += pageTimes[key];
-            }
-            record[`V${key}_timespent`] = pageTimes[key] / 1000;
-        }
-
-        record.AvgTimeVideo = (sumOnVideos / 1000) / numVideos;
-
-        // How many offense & objection messages did the user see? 
-        let offenseMessagesSeen = 0;
-        for (let key in user.offenseMessagesSeen) {
-            if (user.offenseMessagesSeen[key]["seen"] && key != "offense7") {
-                offenseMessagesSeen++;
+                sumOnVideos += pageTime.time;
             }
         }
-        record["#Off_appear"] = offenseMessagesSeen;
 
-        let objectionMessagesSeen = 0;
-        for (let key in user.objectionMessagesSeen) {
-            if (user.objectionMessagesSeen[key]["seen"]) {
-                objectionMessagesSeen++;
-            }
-        }
-        record["#Obj_appear"] = objectionMessagesSeen;
-
-        let NumVideosCompleted_Tutorial = 0;
-        let NumVideosCompleted_Behavioral = 0;
+        record.AvgTimeOnVideoPage = (sumOnVideos / numVideos) / 1000;
 
         let VideoUpvoteNumber = 0;
         let VideoDownvoteNumber = 0;
@@ -196,20 +225,9 @@ async function getDataExport() {
                 continue;
             }
             const video = (feedAction.post.postID % 9) + 1; // 1, 2, 3, 4, 5, 6, 7, 8, 9
-            const video_length = feedAction.post.length;
             const section = video <= 6 ? "Tutorial" : "Behavioral";
 
-            for (const element of feedAction.videoDuration) {
-                if (element.find(vidDuration => vidDuration.startTime == 0 && vidDuration.endTime >= video_length - 1)) {
-                    if (section == "Tutorial") {
-                        NumVideosCompleted_Tutorial++;
-                    } else {
-                        NumVideosCompleted_Behavioral++;
-                    }
-                    break;
-                }
-            }
-
+            // If the video belongs to the behavioral section and not the tutorial section:
             if (section == "Behavioral") {
                 if (feedAction.liked) {
                     VideoUpvoteNumber++;
@@ -267,8 +285,6 @@ async function getDataExport() {
                         record.Off7_Reply = false;
                     }
 
-                    record.Off7_Appear = user.offenseMessagesSeen.offense7.seen;
-
                     // Other comments
                     let string = "";
                     newComments.forEach(comment => { string += comment.new_comment_id + (comment.reply_to ? " (is a reply to " + comment.reply_to + ")" : "") + ": " + comment.body + "\r\n" });
@@ -282,8 +298,6 @@ async function getDataExport() {
         newPageLog.forEach(page => { string += page.page + "\r\n" });
         record.PageLog = string;
 
-        record.NumVideosCompleted_Tutorial = NumVideosCompleted_Tutorial;
-        record.NumVideosCompleted_Behavioral = NumVideosCompleted_Behavioral;
         record.VideoUpvoteNumber = VideoUpvoteNumber;
         record.VideoDownvoteNumber = VideoDownvoteNumber;
         record.VideoFlagNumber = VideoFlagNumber;
@@ -292,7 +306,7 @@ async function getDataExport() {
         record.CommentFlagNumber = CommentFlagNumber;
         record.GeneralPostComments = GeneralPostComments;
 
-        console.log(record);
+        // console.log(record);
         records.push(record);
     }
 
