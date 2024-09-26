@@ -1,7 +1,7 @@
 .computer.only.tablet.only.row 
   .ui.borderless.fixed.menu
     .ui.container
-      a.item(href='')
+      a.item
         img.ui.image(src=cdn+'/logo.svg', id='logo', width='150px')
       if user
         .right.menu
@@ -11,7 +11,7 @@
             span(style="margin-right: 5px;")= user.username
 .mobile.only.row
   .ui.fluid.top.fixed.four.item.menu
-    a.item(href='')
+    a.item
       img.ui.image(src=cdn+'/logo.svg', id='cell_logo', width='150px')
     if user
       a.item
