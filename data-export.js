@@ -64,10 +64,10 @@ async function getDataExport() {
     console.log(color_start, `Starting the data export script...`);
     const currentDate = new Date();
     const outputFilename =
-        `truman_Objections-SocialNorms-preTest-2-dataExport` +
+        `truman_Objections-SocialNorms-dataExport` +
         `.${currentDate.getMonth()+1}-${currentDate.getDate()}-${currentDate.getFullYear()}` +
         `.${currentDate.getHours()}-${currentDate.getMinutes()}-${currentDate.getSeconds()}`;
-    const outputFilepath = `./outputFiles/pretest/${outputFilename}.csv`;
+    const outputFilepath = `./outputFiles/${outputFilename}.csv`;
     const csvWriter_header = [
         { id: 'id', title: "Qualtrics ID" },
         { id: 'username', title: "Username" },
