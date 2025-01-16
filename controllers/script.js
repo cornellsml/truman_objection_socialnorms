@@ -24,7 +24,7 @@ exports.getScriptTutorial = async(req, res, next) => {
 
         script_feed = await helpers.getTutorial(user);
 
-        res.render('script', { script: script_feed, title: 'Feed', disabledFunctionalitiies: true });
+        res.render('script', { script: script_feed, title: 'Feed', disabledFunctionalities: true });
     } catch (err) {
         next(err);
     }

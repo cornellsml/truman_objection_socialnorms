@@ -7,18 +7,18 @@
         video(src=cdn+'/post_pictures/'+val.picture controls controlsList="nofullscreen" poster type='video/mp4')
         .content.buttons
           .ui.buttons.small
-            .ui.left.labeled.button(class=disabledFunctionalitiies? "disabled": "")
+            .ui.left.labeled.button(class=disabledFunctionalities? "disabled": "")
               a.ui.basic.green.right.pointing.label !{val.likes}
               .ui.like.button(tabindex='0', data-tooltip="I like this", data-position="bottom center", data-variation="mini", class=val.like? "green": null)
                 i.thumbs.up.icon
                 | Upvote
-            .ui.right.labeled.button(class=disabledFunctionalitiies? "disabled": "")
+            .ui.right.labeled.button(class=disabledFunctionalities? "disabled": "")
               .ui.unlike.button(tabindex='0', data-tooltip="I dislike this", data-position="bottom center", data-variation="mini", class=val.unlike? "red": null)
                 i.thumbs.down.icon
                 | Downvote
               a.ui.basic.red.left.pointing.label !{val.unlikes}
           .secondary-buttons
-            .ui.flag.button.small(tabindex='0', data-tooltip="Report Video", data-position="top center", data-variation="mini", class=[val.flag? "orange": null, disabledFunctionalitiies? "disabled": ""])
+            .ui.flag.button.small(tabindex='0', data-tooltip="Report Video", data-position="top center", data-variation="mini", class=[val.flag? "orange": null, disabledFunctionalities? "disabled": ""])
               i.flag.icon
               | Flag
       .eleven.wide.column.centered
@@ -28,7 +28,7 @@
           .inline.field
             .image
               img.ui.image.rounded(src=user.profile.picture)
-            textarea.replyToVideo(name='replyToVideo' type='text' placeholder='Add a Comment...' rows='1' disabled=disabledFunctionalitiies? true: false)
+            textarea.replyToVideo(name='replyToVideo' type='text' placeholder='Add a Comment...' rows='1' disabled=disabledFunctionalities? true: false)
             i.big.send.link.icon.replyToVideo
         h4(style="text-align: right; color: gray;") Sort by: Newest First
         .ui.comments(style="display:none;")

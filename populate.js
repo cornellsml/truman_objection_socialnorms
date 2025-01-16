@@ -182,7 +182,6 @@ async function doPopulate() {
         }).then(function(result) {
             console.log(color_start, "Starting to populate post replies...");
             return new Promise((resolve, reject) => {
-                let parentComment;
                 async.eachSeries(comment_list, async function(new_reply, callback) {
                         const act = await Actor.findOne({ username: new_reply.actor }).exec();
                         if (act) {
@@ -200,18 +199,16 @@ async function doPopulate() {
                                     subcomments: []
                                 };
 
-                                // Is a parent comment?
+                                // Is a second-level reply?
                                 if (new_reply.class == 'R') {
-                                    parentComment = comment_detail;
-                                    return;
-                                } // Is a reply?
-                                else if (parentComment != null) {
-                                    parentComment.subcomments.push(comment_detail);
-                                    comment_detail = parentComment;
-                                    parentComment = null;
+                                    const comment = pr.comments.find((comment) => comment.commentID == new_reply.replyTo);
+                                    comment.subcomments.push(comment_detail);
+                                    comment.subcomments.sort(function(a, b) { return b.time - a.time; });
+                                } // Is a parent reply?
+                                else {
+                                    pr.comments.push(comment_detail);
+                                    pr.comments.sort(function(a, b) { return b.time - a.time; });
                                 }
-                                pr.comments.push(comment_detail);
-                                pr.comments.sort(function(a, b) { return b.time - a.time; });
 
                                 try {
                                     await pr.save();
