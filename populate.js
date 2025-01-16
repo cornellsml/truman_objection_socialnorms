@@ -200,7 +200,7 @@ async function doPopulate() {
                                 };
 
                                 // Is a second-level reply?
-                                if (new_reply.class == 'R') {
+                                if (new_reply.replyTo) {
                                     const comment = pr.comments.find((comment) => comment.commentID == new_reply.replyTo);
                                     comment.subcomments.push(comment_detail);
                                     comment.subcomments.sort(function(a, b) { return b.time - a.time; });
